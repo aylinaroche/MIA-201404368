@@ -15,7 +15,7 @@ char* del=NULL;
 char* name=NULL;
 char* add=NULL;
 char* id=NULL;
-char* ruta=NULL;
+/*char* ruta=NULL;
 /*char* p=NULL;
 char* cont=NULL;
 char* dest=NULL;
@@ -81,10 +81,110 @@ void verificarComando(char *com, char *atributos){
     }
 }
 
-
-
-
 void crearDisco(char* comando){
+
+
+
+int cDisco(char* size, char* unit, char*path, int name){
+ int aux=0;
+    if(strcmp(unit,"M")==0 || strcmp(unit,"m")==0 ){
+       aux =1;
+  }  else if(strcmp(unit,"K")==0 || strcmp(unit,"k")==0 ){
+        aux=2;
+    }else{
+        printf("no existe esa unidad \n");
+        return 0;}
+
+   char direcc[200];
+   char direcc2[200];
+   int i=0;
+   for(i=0;i<200;i++){
+       direcc2[i] ='\0';
+   }
+  strcpy(direcc, path);
+
+  for(i=0;i<200;i++){
+      if(direcc[i]=='/'){
+          direcc2[i]=direcc[i];
+          char *aux= (char*)malloc(150);
+          strcpy(aux,"mkdir ");
+          strcat(aux,direcc2);
+
+          printf("direccion: %s\n",aux);
+          system(aux);
+          free(aux);
+      }
+      direcc2[i]=direcc[i];
+      if(direcc[i]=='\0'){
+          break;
+      }
+  }
+
+  for(i=0;i<200;i++){
+      if(direcc2[i]=='\n'){
+          direcc2[i]='\0';
+      }
+  }
+
+  char buffer[1024];
+   i=0;
+  for(i=0;i<1024;i++){
+      buffer[i]='0';
+  }
+  /*
+   mbr inf;
+   inf.fecha = time(0);
+   inf.sign = ran;
+   i=0;
+   for(i=0;i<4;i++){
+       inf.part[i].size =0;
+        inf.part[i].sizeaux =0;
+       inf.part[i].start =0;
+       inf.part[i].fit = '0';
+       inf.part[i].status = '0';
+       inf.part[i].type = '0';
+int ii=0;
+for(ii=0;ii<8;ii++){
+inf.part[i].extendida[ii].status='0';
+inf.part[i].extendida[ii].fit='0';
+inf.part[i].extendida[ii].next=0;
+inf.part[i].extendida[ii].size=0;
+inf.part[i].extendida[ii].sizeaux=0;
+inf.part[i].extendida[ii].start=0;
+}
+*/
+   }
+   int cantidad=atoi(size);
+   if(cantidad<1){
+    printf("el tamaño es ilegal \n");
+       return 0;
+   }
+
+   FILE *disco;
+   disco = fopen(path,"wb+");
+/*
+   if(aux==1){
+       inf.size = cantidad*1048576;
+        inf.size = cantidad*1048576;
+       cantidad= cantidad*1024;
+   }else if(aux==2){
+       inf.size = cantidad*1024;
+   }
+*/
+   i=0;
+   for(i=0;i<cantidad;i++){
+       fwrite(&buffer,1024,1,disco);
+   }
+
+  fseek(disco,0,SEEK_SET);
+   fwrite(&inf,sizeof(mbr),1,disco);
+   fclose(disco);
+       printf("se creo el Disco\n");
+
+ return 1;
+}
+
+
 
         char* token1;
         char* com=comando;
