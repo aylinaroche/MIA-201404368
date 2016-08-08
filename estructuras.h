@@ -16,7 +16,7 @@ typedef struct EBR{
     char fit;
     int start;
     int size;
-//    int sizeaux;
+    int sizeAux;
     int next;
     char name[16];
 }ebr;
@@ -27,7 +27,7 @@ typedef struct PARTICION{
     char fit;
     int start;
     int size;
-   // int sizeaux;
+    int sizeAux;
     char name[16];
     ebr extendida[8];
 }particion;
