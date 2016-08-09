@@ -35,7 +35,7 @@ void verificarComando(char *com, char *atributos){
          }
          }
      strcpy(atributos,atr);
-     printf("ATR= %s\n",atributos);
+  //   printf("ATR= %s\n",atributos);
     char aux[100];
     strcpy(aux, atributos);
     inst = strtok(atributos," ");
@@ -174,6 +174,7 @@ void verificarComando(char *com, char *atributos){
                	}
                }
                imprimirDatos();
+               adminParticion();
 
 
     } else  if(strcasecmp(com,"mount")==0 ||strcasecmp(com,"MOUNT")==0  ){

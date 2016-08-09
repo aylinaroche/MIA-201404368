@@ -240,7 +240,7 @@ if(boolCrearDisco ==1){
 	  fseek(disco,0,SEEK_SET);
 	  fwrite(&inf,sizeof(mbr),1,disco);
 	  */
-	   metodoPrueba(disco);
+//	   metodoPrueba(disco);
 	   fclose(disco);
 
 	  printf("Se creo el Disco\n");
@@ -248,10 +248,6 @@ if(boolCrearDisco ==1){
 	 return 1;
 	//
 }
-}
-
-void iniciarParamDisco(){
-
 }
 
 void imprimirDatos(){
@@ -294,7 +290,7 @@ int eliminarDisco(){
     FILE* disco;
     disco = fopen(path,"wb+");
     if(disco== NULL){
-      printf("ERROR:No existe el Disco.\n");
+      printf("ERROR: No existe el Disco.\n");
       return 0;
     }else{
         if(strcmp(path,"/home/aylin")==0||strcmp(path,"/home/aylin/")==0){
@@ -317,7 +313,7 @@ int eliminarDisco(){
     return 1;
 }
 
-void crearParticion(){
+void adminParticion(){
 	 if(unit==NULL){
 	   unit="k";
 	 }
@@ -331,36 +327,42 @@ void crearParticion(){
 	    	if(path==NULL || siz ==NULL || name ==NULL){
 	    		printf("ERROR: Falta un atributo obligatorio.\n");
 	    	}else{
-	    		CrearParticion(path,name,siz,unit,type,fit);
+	    		int d =	crearParticion(path,name,siz,unit,type,fit);
+	    		if(d==0){
+	    				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+	    			}
 	    	}
 	    }else if(dele==NULL){
 	    	if(path==NULL || name ==NULL){
 	    		printf("ERROR: Falta un atributo obligatorio.\n");
 	       	}else{
-	       		AgregarParticion(add,unit,path,name);
+	       		int d =agregarParticion(add,unit,path,name);
+	       		if(d==0){
+	       				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+	       			}
 	       	}
 	    } else if(add==NULL){
 	    	if(path==NULL || name ==NULL){
 	    		printf("ERROR: Falta un atributo obligatorio.\n");
 	      	}else{
-	      		EliminarParticion(dele,path,name);
+	      		int d =eliminarParticion(dele,path,name);
+	      		if(d==0){
+	      				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+	      			}
 	      	}
 	    }else{
 	    	if(path==NULL || name ==NULL){
 	    		printf("ERROR: Falta un atributo obligatorio.\n");
 	    	}else{
-	    		AgregarParticion(add,unit,path,name);
+	    		int d =agregarParticion(add,unit,path,name);
+	    		if(d==0){
+	    				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+	    			}
 	    	}
 	    }
-/*
-	int d =cDisco(siz,unit,path,name);
-	if(d==0){
-		printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
-	}
-*/
 }
 
-int CrearParticion(char* path,char* name,char* siz,char* unit,char* type,char* fit){
+int crearParticion(char* path,char* name,char* siz,char* unit,char* type,char* fit){
     int tam= atoi(siz);
     int libre=0;
     int particion=0;
@@ -449,25 +451,27 @@ int CrearParticion(char* path,char* name,char* siz,char* unit,char* type,char* f
   }
   //VERIFICAR LA UNIDAD
   int bytes=0;
-  if(strcasecmp(unit,"k")==0||strcasecmp(unit,"K")==0){
+  if(strcasecmp(unit,"k")==0||strcasecmp(unit,"K")==0){ //Kilobyte -> 1024 bytes
       bytes = tam*1024;
-  }else if(strcasecmp(unit,"m")==0||strcasecmp(unit,"M")==0){
+  }else if(strcasecmp(unit,"m")==0||strcasecmp(unit,"M")==0){ //megabyte -> 1024 Kb
       bytes = tam*1024*1024;
-  }else if(strcasecmp(unit,"b")==0||strcasecmp(unit,"B")==0) {
+  }else if(strcasecmp(unit,"b")==0||strcasecmp(unit,"B")==0) { //byte -> 8bits
      bytes=tam;
   }else{
       printf("ERROR: La unidad no existe.\n");
       return 0;
   }
-
+//VERIFICAR TAMANIO DE PARTICION
   libre = structDisco.size-particion;
 
-   int espacio=0;
-   if(tipo==1 || tipo==3){ // Primaria o extendida
+  int espacio=0;
+
+if(tipo==1 || tipo==3){ // Si la particion es primaria o extendida
        if(libre < bytes){
            printf("ERROR: No hay tamaño disponible.\n");
            return 0;
        }
+ //ASINGAR TIPO, AJUSTE, TAMANIO
   for(i=0;i<4;i++){
       if(structDisco.part[i].status == '0'){
           if(structDisco.part[i].size ==0 || bytes<structDisco.part[i].size){
@@ -480,8 +484,9 @@ int CrearParticion(char* path,char* name,char* siz,char* unit,char* type,char* f
           }
               strcpy(structDisco.part[i].name,name);
               structDisco.part[i].size = bytes;
-               structDisco.part[i].sizeAux = bytes;
+              structDisco.part[i].sizeAux = bytes;
               if(i==0){
+            	  printf("Size of=%d\n",sizeof(mbr));
                   structDisco.part[i].start = sizeof(mbr)+1;
                   espacio =1;
               }else{
@@ -489,6 +494,7 @@ int CrearParticion(char* path,char* name,char* siz,char* unit,char* type,char* f
                   espacio =1;
               }
               structDisco.part[i].status ='1';
+
   if(strcasecmp(type,"E")==0||strcasecmp(type,"e")==0){
    structDisco.part[i].type ='e';
   }else{
@@ -499,72 +505,87 @@ int CrearParticion(char* path,char* name,char* siz,char* unit,char* type,char* f
           }
       }
   }
-   }else{
+   }else{ //Si la particion es logica
        for(i=0;i<4;i++){
-           if(structDisco.part[i].type == 'E' || structDisco.part[i].type == 'e' ){
+           if(structDisco.part[i].type == 'E' || structDisco.part[i].type == 'e' ){ //Si existe una extendida antes
               int ii=0;
                for(ii=0;ii<8;ii++){
-                   int ii2=0;
-                   int espa=0;
-                for(ii2=0;ii2<8;ii2++){
-             espa= espa + structDisco.part[i].extendida[ii2].size;}
-                int mostrar= structDisco.part[i].sizeAux;
-       espa= structDisco.part[i].sizeAux-espa;
-       if(espa < bytes){
-           printf("no hay tamaño disponible ");
-           return 0;
-       }
+                   int j=0;
+                   int espa=0; //suma de todas las particiones extendidas
+                for(j=0;j<8;j++){
+                	espa= espa + structDisco.part[i].extendida[j].size;
+                }
+               espa= structDisco.part[i].sizeAux-espa;
+			   if(espa < bytes){
+				   printf("ERROR: No hay tamaño disponible.\n");
+				   return 0;
+			   }
 
-       if(structDisco.part[i].extendida[ii].status == '0'){
-           if(structDisco.part[i].extendida[ii].size ==0 || bytes<structDisco.part[i].extendida[ii].size){
-               if(fi[0]=='F' ||fi[0]=='f'){
-               structDisco.part[i].extendida[ii].fit = 'f';
-               }else   if(fi[0]=='B' ||fi[0]=='b'){
-                   structDisco.part[i].extendida[ii].fit = 'b';
-               }else{
-                    structDisco.part[i].extendida[ii].fit = 'w';
-               }
-               strcpy(structDisco.part[i].extendida[ii].name,name);
-               structDisco.part[i].extendida[ii].size = bytes;
-               structDisco.part[i].extendida[ii].sizeAux = bytes;
-               if(ii==0){
-                   structDisco.part[i].extendida[ii].start = structDisco.part[i].start+1;
-                    structDisco.part[i].extendida[ii].next = -1;
-                   espacio =1;
-               }else{
-                   structDisco.part[i].extendida[ii].start = structDisco.part[i].extendida[ii-1].start+structDisco.part[i].extendida[ii-1].size;
-                    structDisco.part[i].extendida[ii-1].next= structDisco.part[i].extendida[ii-1].start+structDisco.part[i].extendida[ii-1].size;
-                   espacio =1;
-               }
-               structDisco.part[i].extendida[ii].status ='1';
-               espacio =1;
-               break;
-           }
-       }
+		    if(structDisco.part[i].extendida[ii].status == '0'){
+			   if(structDisco.part[i].extendida[ii].size ==0 || bytes<structDisco.part[i].extendida[ii].size){
+
+				   if(fi[0]=='F' ||fi[0]=='f'){ //Primer ajuste
+				   structDisco.part[i].extendida[ii].fit = 'f';
+				   }else   if(fi[0]=='B' ||fi[0]=='b'){ //Mejor Ajuste
+					   structDisco.part[i].extendida[ii].fit = 'b';
+				   }else{
+						structDisco.part[i].extendida[ii].fit = 'w'; //Peor ajuste
+				   }
+				   strcpy(structDisco.part[i].extendida[ii].name,name);
+				   structDisco.part[i].extendida[ii].size = bytes;
+				   structDisco.part[i].extendida[ii].sizeAux = bytes;
+
+				   if(ii==0){ //
+					   structDisco.part[i].extendida[ii].start = structDisco.part[i].start+1;
+					   structDisco.part[i].extendida[ii].next = -1;
+					   espacio =1;
+				   }else{
+					   structDisco.part[i].extendida[ii].start = structDisco.part[i].extendida[ii-1].start+structDisco.part[i].extendida[ii-1].size;
+					   structDisco.part[i].extendida[ii-1].next= structDisco.part[i].extendida[ii-1].start+structDisco.part[i].extendida[ii-1].size;
+					   espacio =1;
+				   }
+				   structDisco.part[i].extendida[ii].status ='1';
+				   espacio =1;
+				   break;
+			   }
+		   }
               }
            }
        }
 
    }
 
+if (espacio==0){
+     printf("ERROR: No existe espacio suficiente.\n");
+    return 0;
+}
+fseek(archivo,0,SEEK_SET);
+printf("Size2 = %d\n",sizeof(mbr));
+fwrite(&structDisco,sizeof(mbr),1,archivo);
+fclose(archivo);
+    printf("-> Se creo la particion correctamente.\n");
+return 1;
+
 
 }
 
-int AgregarParticion(char* add,char* unit,char* path,char* name){
+int agregarParticion(char* add,char* unit,char* path,char* name){
 	int tam= atoi(add);
-	    int libre=0;
-	    int par=0;
+	int libre=0;
+	int par=0;
 
-	    FILE* archivo;
-	    archivo = fopen(path,"rb+");
-	    if(archivo== NULL){
-	        printf("no existe el disco");
-	        return 0;
-	    }
+//VERIFICA SI EL DISCO EXISTE
+	FILE* archivo;
+	archivo = fopen(path,"rb+");
+	if(archivo== NULL){
+	   printf("ERROR: No existe el disco.\n");
+	   return 0;
+	}
 	    mbr structDisco;
 	    fseek(archivo,0,SEEK_SET);
 	    fread(&structDisco,sizeof(mbr),1,archivo);
 
+//VERIFICA LA UNIDAD DEL DISCO
 	    int bytes=0;
 	    if(strcasecmp(unit,"k")==0||strcasecmp(unit,"K")==0){
 	        bytes = tam*1024;
@@ -573,15 +594,136 @@ int AgregarParticion(char* add,char* unit,char* path,char* name){
 	    }else if(strcasecmp(unit,"b")==0||strcasecmp(unit,"B")==0) {
 	       bytes=tam;
 	    }else{
-	        printf("unidad ilegal");
+	        printf("ERROR: Unidad incorrecta.\n");
 	        return 0;
 	    }
 	int i=0;
 	int a=0;
 	int ii=0;
+//VERIFICA SI EL NOMBRE EXISTE
+	for(i=0;i<4;i++){
+	        if(strcasecmp(name, structDisco.part[i].name)==0){
+	            break;
+	        }
+	        for(ii=0; ii<8; ii++){
+	            if(strcasecmp(name, structDisco.part[i].extendida[ii].name)==0){
+	                a=1;
+	                break;
+	            }
+	        }
+	        if(a>0){
+	            break;
+	        }
+	    }
+   if(i==4 && a==0){
+      printf("ERROR: El nombre indicado no existe.\n");
+      return 0;
+   }
 
+//VERIFICAR SI EL ESPACIO ES SUFICIENTE
+   if(a>0){
+    if(bytes>0){
+     if(ii<7){
+      printf("ii = %d\n",ii);
+    	 if(structDisco.part[i].extendida[ii+1].start!=0){ //
+		   int sig = structDisco.part[i].extendida[ii].start + structDisco.part[i].extendida[ii].sizeAux ;
+		   int ant = structDisco.part[i].extendida[ii+1].start;
+
+		   int resta= ant-sig;
+
+		   if(resta<bytes){
+			   printf("ERROR: No hay espacio.\n");
+			   return 0;
+		   }
+		   structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux + bytes;
+
+		   if(structDisco.part[i].extendida[ii].sizeAux >  structDisco.part[i].extendida[ii].size){
+			   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size + (structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+		   }
+
+		   }else{
+			  int j=0;
+			  int sum=0;
+				for(j=0; j<8; j++){
+					sum = sum +structDisco.part[i].extendida[j].size;
+				}
+				int resta= structDisco.part[i].sizeAux-sum;
+				if(resta<bytes){
+					printf("ERROR: No hay espacio.\n");
+					return 0;
+				}
+				structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux+bytes;
+				if(structDisco.part[i].extendida[ii].sizeAux> structDisco.part[i].extendida[ii].size){
+					structDisco.part[i].extendida[ii].size= structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+				}
+		  }
+     }else{
+         int j=0;
+         int sum=0;
+       for(j=0; j<8; j++){
+           sum=sum +structDisco.part[i].extendida[j].size;
+       }
+       int resta= structDisco.part[i].sizeAux-sum;
+       if(resta<bytes){
+           printf("No hay espacio");
+          return 0;
+       }
+       structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux + bytes;
+       if(structDisco.part[i].extendida[ii].sizeAux > structDisco.part[i].extendida[ii].size){
+    	   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+       }
+
+     }
+   }
+}
 }
 
-int EliminarParticion(char* dele,char* path,char* name){
+int eliminarParticion(char* dele,char* path,char* name){
 
+//VERIFICA SI EXISTE EL DISCO
+	FILE* archivo;
+	archivo = fopen(path,"rb+");
+	    if(archivo== NULL){
+	         printf("ERROR: No existe el disco.\n");
+	        return 0;
+	    }
+	    mbr structDisco;
+	    fseek(archivo,0,SEEK_SET);
+	    fread(&structDisco,sizeof(mbr),1,archivo);
+
+	    int existe=0;
+	    int tipoDelete=0;
+	    int i=0;
+	    int ii=0;
+
+//VERIFICA SI EL NOMBRE EXISTE
+	    for(i=0;i<4;i++){
+	        if(strcasecmp(structDisco.part[i].name,name)==0){
+	            break;
+	        }
+	        for(ii=0;ii<8;ii++){
+	            if(strcasecmp(structDisco.part[i].extendida[ii].name,name)==0){
+	            	existe=1;
+	                break;
+	            }
+	        }
+	            if(existe==1){
+	                break;
+	            }
+	    }
+	    if(i==4 && existe==0){
+	        printf("ERROR: No existe el nombre.\n");
+	       return 0;
+	    }
+	if(strcasecmp(dele,"full")==0){
+		tipoDelete=1;
+	}else if(strcasecmp(dele,"fast")==0){
+		tipoDelete=2;
+	}else{
+	    printf("ERROR: Tipo de Delete incorrecto.\n");
+	   return 0;
+	}
+
+	return 1;
 }
+

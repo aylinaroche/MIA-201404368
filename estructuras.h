@@ -17,15 +17,15 @@ typedef struct EBR{
     int start;
     int size;
     int sizeAux;
-    int next;
+    int next; //Byte en el que esta el sigueinte ebr -1 si no hay
     char name[16];
 }ebr;
 
 typedef struct PARTICION{
     char status; //1 activa, 0 caida
     char type;
-    char fit;
-    int start;
+    char fit; //ajuste
+    int start;//en que byte inicia
     int size;
     int sizeAux;
     char name[16];
