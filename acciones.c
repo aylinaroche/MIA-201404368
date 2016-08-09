@@ -623,60 +623,95 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 //VERIFICAR SI EL ESPACIO ES SUFICIENTE
    if(a>0){
     if(bytes>0){
-     if(ii<7){
-      printf("ii = %d\n",ii);
-    	 if(structDisco.part[i].extendida[ii+1].start!=0){ //
-		   int sig = structDisco.part[i].extendida[ii].start + structDisco.part[i].extendida[ii].sizeAux ;
-		   int ant = structDisco.part[i].extendida[ii+1].start;
+		 if(ii<7){
+			 printf("ii = %d\n",ii);
+			 if(structDisco.part[i].extendida[ii+1].start!=0){ //
+			   int sig = structDisco.part[i].extendida[ii].start + structDisco.part[i].extendida[ii].sizeAux ;
+			   int ant = structDisco.part[i].extendida[ii+1].start;
 
-		   int resta= ant-sig;
+			   int resta= ant-sig;
 
+			   if(resta<bytes){
+				   printf("ERROR: No hay espacio.\n");
+				   return 0;
+			   }
+			   structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux + bytes;
+
+			   if(structDisco.part[i].extendida[ii].sizeAux >  structDisco.part[i].extendida[ii].size){
+				   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size + (structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+			   }
+
+			   }else{
+				  int j=0;
+				  int sum=0;
+					for(j=0; j<8; j++){
+						sum = sum +structDisco.part[i].extendida[j].size;
+					}
+					int resta= structDisco.part[i].sizeAux-sum;
+					if(resta<bytes){
+						printf("ERROR: No hay espacio.\n");
+						return 0;
+					}
+					structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux+bytes;
+					if(structDisco.part[i].extendida[ii].sizeAux> structDisco.part[i].extendida[ii].size){
+						structDisco.part[i].extendida[ii].size= structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+					}
+			  }
+		 }else{
+			 int j=0;
+			 int sum=0;
+		   for(j=0; j<8; j++){
+			   sum=sum +structDisco.part[i].extendida[j].size;
+		   }
+		   int resta= structDisco.part[i].sizeAux-sum;
 		   if(resta<bytes){
 			   printf("ERROR: No hay espacio.\n");
 			   return 0;
 		   }
 		   structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux + bytes;
-
-		   if(structDisco.part[i].extendida[ii].sizeAux >  structDisco.part[i].extendida[ii].size){
-			   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size + (structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
+		   if(structDisco.part[i].extendida[ii].sizeAux > structDisco.part[i].extendida[ii].size){
+			   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
 		   }
 
-		   }else{
-			  int j=0;
-			  int sum=0;
-				for(j=0; j<8; j++){
-					sum = sum +structDisco.part[i].extendida[j].size;
+		 }
+    }else{
+       if(ii<7){
+			if(structDisco.part[i].extendida[ii+1].start!=0){
+				int resta= bytes+ structDisco.part[i].extendida[ii].sizeAux;
+				if(resta>0){
+					structDisco.part[i].extendida[ii].sizeAux=resta;
+				}else{
+					printf("ERROR: No hay espacio para borrar.\n");
+					return 0;
 				}
-				int resta= structDisco.part[i].sizeAux-sum;
-				if(resta<bytes){
+			}else{
+				int resta= bytes+ structDisco.part[i].extendida[ii].sizeAux;
+				if(resta>0){
+					structDisco.part[i].extendida[ii].sizeAux=resta;
+				structDisco.part[i].extendida[ii].size=resta;
+				}else{
 					printf("ERROR: No hay espacio.\n");
 					return 0;
 				}
-				structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux+bytes;
-				if(structDisco.part[i].extendida[ii].sizeAux> structDisco.part[i].extendida[ii].size){
-					structDisco.part[i].extendida[ii].size= structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
-				}
-		  }
-     }else{
-         int j=0;
-         int sum=0;
-       for(j=0; j<8; j++){
-           sum=sum +structDisco.part[i].extendida[j].size;
+			}
+       }else{
+           int resta=bytes+ structDisco.part[i].extendida[ii].sizeAux;
+           if(resta>0){
+        	   structDisco.part[i].extendida[ii].sizeAux=resta;
+        	   structDisco.part[i].extendida[ii].size=resta;
+           }else{
+        	   printf("ERROR: No hay espacio.\n");
+        	   return 0;
+           }
        }
-       int resta= structDisco.part[i].sizeAux-sum;
-       if(resta<bytes){
-           printf("No hay espacio");
-          return 0;
-       }
-       structDisco.part[i].extendida[ii].sizeAux = structDisco.part[i].extendida[ii].sizeAux + bytes;
-       if(structDisco.part[i].extendida[ii].sizeAux > structDisco.part[i].extendida[ii].size){
-    	   structDisco.part[i].extendida[ii].size = structDisco.part[i].extendida[ii].size+(structDisco.part[i].extendida[ii].sizeAux- structDisco.part[i].extendida[ii].size);
-       }
-
      }
+    }
+	fseek(archivo,0,SEEK_SET);
+	fwrite(&structDisco,sizeof(mbr),1,archivo);
+	fclose(archivo);
+	printf("-> Se realizo la modificacion correctamente.\n");
+	return 1;
    }
-}
-}
 
 int eliminarParticion(char* dele,char* path,char* name){
 
@@ -724,6 +759,11 @@ int eliminarParticion(char* dele,char* path,char* name){
 	   return 0;
 	}
 
+	fseek(archivo,0,SEEK_SET);
+	fwrite(&structDisco,sizeof(mbr),1,archivo);
+	fclose(archivo);
+	printf("-> Se elimino correctamente.\n");
+	return 1;
 	return 1;
 }
 
