@@ -118,7 +118,7 @@ void verificarComando(char *com, char *atributos){
                     }
                     }
                 strcpy(atributos,atr);
-                printf("ATR= %s\n",atributos);
+             //   printf("ATR= %s\n",atributos);
                char aux[100];
                strcpy(aux, atributos);
                inst = strtok(atributos," ");
@@ -178,9 +178,120 @@ void verificarComando(char *com, char *atributos){
 
 
     } else  if(strcasecmp(com,"mount")==0 ||strcasecmp(com,"MOUNT")==0  ){
-           printf("mount\n");
-    } else  if(strcasecmp(com,"unmount")==0 ||strcasecmp(com,"UNMOUNT")==0  ){
-             printf("unmount\n");
+    	 printf("mount\n");
+    	 char atr[200];
+    	 strcpy(atr,atributos);
+    	 int j;
+    	 for(j=0;j<200;j++){
+    		 if(atr[j]=='\\'){
+    			 atr[j]=' ';
+    		 }
+    	 }
+    	 strcpy(atributos,atr);
+    	 char aux[100];
+    	 strcpy(aux, atributos);
+    	 inst = strtok(atributos," ");
+    	 //  printf("inst = %s\n",inst);
+    	 while(inst!=NULL){
+    		 inst = strtok(NULL, " ");
+    		 switch(cont){
+    		 case 1:
+    			 com1=inst;
+    			 break;
+    			 case 2:
+    				 com2=inst;
+    				 break;
+    		 }
+    		 cont++;
+    	 }
+    	 int i;
+    	 for(i=1;i<cont-1;i++){
+    		 if(i==1){
+    			 atributoDisco(com1);
+    	     }else if(i==2){
+    	    	 atributoDisco(com2);
+    	     }
+    	 }
+			 imprimirDatos();
+			 montar();
 
+    } else  if(strcasecmp(com,"unmount")==0 ||strcasecmp(com,"UNMOUNT")==0 ||strcasecmp(com,"UNmount")==0  ){
+             printf("unmount\n");
+             char atr[200];
+             strcpy(atr,atributos);
+             int j;
+             for(j=0;j<200;j++){
+            	 if(atr[j]=='\\'){
+            		 atr[j]=' ';
+            	 }
+             }
+             strcpy(atributos,atr);
+             char aux[100];
+             strcpy(aux, atributos);
+             inst = strtok(atributos," ");
+              while(inst!=NULL){
+            	 inst = strtok(NULL, " ");
+            	 switch(cont){
+            	 case 1:
+            		 com1=inst;
+            		 break;
+            		 case 2:
+            			 com2=inst;
+            			 break;
+            	 }
+            	 cont++;
+             }
+                	 int i;
+                	 for(i=1;i<cont-1;i++){
+                		 if(i==1){
+                			 atributoDisco(com1);
+                	     }else if(i==2){
+                	    	 atributoDisco(com2);
+                	     }
+                	 }
+                 imprimirDatos();
+                 desmontar();
+
+    } else  if(strcasecmp(com,"REP")==0 ||strcasecmp(com,"rep")==0){
+                printf("rep\n");
+                char atr[200];
+                strcpy(atr,atributos);
+                int j;
+                for(j=0;j<200;j++){
+               	 if(atr[j]=='\\'){
+               		 atr[j]=' ';
+               	 }
+                }
+                strcpy(atributos,atr);
+                char aux[100];
+                strcpy(aux, atributos);
+                inst = strtok(atributos," ");
+                 while(inst!=NULL){
+               	 inst = strtok(NULL, " ");
+               	 switch(cont){
+               	 	 case 1:
+               	 		 com1=inst;
+               	 		 break;
+               	 	 case 2:
+               			 com2=inst;
+               			 break;
+               	 	 case 3:
+               	 		 com3=inst;
+               	 		 break;
+               	 }
+               	 cont++;
+                }
+                   	 int i;
+                   	 for(i=1;i<cont-1;i++){
+                   		 if(i==1){
+                   			 atributoDisco(com1);
+                   	     }else if(i==2){
+                   	    	 atributoDisco(com2);
+                   	     }else if(i==2){
+                   	    	 atributoDisco(com2);
+                   	     }
+                   	 }
+                    imprimirDatos();
+
+       }
     }
-}
