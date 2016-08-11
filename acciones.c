@@ -10,6 +10,9 @@
 #include "acciones.h"
 #include "estructuras.h"
 
+mount montar[50];
+char letras[15]= {'l','a','b','c','d','e','f','g','h','i','j','k'};
+
 char* size=NULL;
 char* unit=NULL;
 char* path=NULL;
@@ -20,6 +23,7 @@ char* name=NULL;
 char* add=NULL;
 char* id=NULL;
 int boolCrearDisco=1;
+int varLetra=0;
 
 void atributoDisco(char* coman){
 //printf("atributo disco %s\n",coman);
@@ -64,6 +68,7 @@ void atributoDisco(char* coman){
             dele=token1;
         }else if(strcasecmp(token1,"-name")==0 || strcasecmp(token1,"–name")==0){
             token1=strtok(NULL,":");
+          //  printf("tok1 = %s\n",token1);
             char nombre[200];
             strcpy(nombre,token1);
             if(nombre[0]=='"'){
@@ -78,6 +83,7 @@ void atributoDisco(char* coman){
                   nombre[i]='\0';
                   nombre[i+1]='\0';
              }
+         //   printf("tok1 = %s\n",token1);
              strcpy(token1,nombre);
             name=token1;
         }else if(strcasecmp(token1,"+add")==0){
@@ -202,7 +208,7 @@ if(boolCrearDisco ==1){
 		   structDisco.part[i].status = '0';
 		   structDisco.part[i].type = '0';
 		int j=0;
-			for(j=0;j<8;j++){
+			for(j=0;j<20;j++){
 			structDisco.part[i].exten[j].status='0';
 			structDisco.part[i].exten[j].fit='0';
 			structDisco.part[i].exten[j].next=0;
@@ -262,7 +268,7 @@ printf("  type = %s\n",type);
 printf("  add = %s\n",add);
 printf("  delete = %s\n",dele);
 printf("  fit = %s\n",fit);
-//printf("  unit = %s\n",unit);
+printf("  id = %s\n",id);
 }
 
 void limpiarVariables(){
@@ -394,6 +400,7 @@ int crearParticion(char* path, char* name,char* size,char* unit,char* type,char*
       printf("ERROR: Tipo de particion incorrecta.\n");
       return 0;
   }
+
 //VERIFICAR AJUSTE
   if(strcasecmp(fit,"BF")==0 || strcasecmp(fit,"bf")==0 || strcasecmp(fit,"bF")==0 || strcasecmp(fit,"Bf")==0){
       strcpy(ajuste,"BF");
@@ -434,7 +441,7 @@ int crearParticion(char* path, char* name,char* size,char* unit,char* type,char*
       for(i=0;i<4;i++){
           if(structDisco.part[i].type == 'E' || structDisco.part[i].type == 'e' ){
               int j=0;
-              for(j=0; j<8; j++){
+              for(j=0; j<20; j++){
                   if(strcasecmp(name,structDisco.part[i].exten[j].name)==0){
                      printf("ERROR: Ya existe el nombre.\n");
                      return 0;
@@ -499,7 +506,8 @@ if(tipo==1 || tipo==3){ // Si la particion es primaria o extendida
            printf("ERROR: No hay tamaño disponible.\n");
            return 0;
        }
- //ASINGAR TIPO, AJUSTE, TAMANIO
+
+//ASINGAR TIPO, AJUSTE, TAMANIO
   for(i=0;i<4;i++){
       if(structDisco.part[i].status == '0'){
           if(structDisco.part[i].size ==0 || bytes<structDisco.part[i].size){
@@ -537,10 +545,10 @@ if(tipo==1 || tipo==3){ // Si la particion es primaria o extendida
        for(i=0;i<4;i++){
            if(structDisco.part[i].type == 'E' || structDisco.part[i].type == 'e' ){ //Si existe una extendida antes
               int j=0;
-               for(j=0;j<8;j++){
+               for(j=0;j<20;j++){
                    int j=0;
                    int espa=0; //suma de todas las particiones extendidas
-                for(j=0;j<8;j++){
+                for(j=0;j<20;j++){
                 	espa= espa + structDisco.part[i].exten[j].size;
                 }
                espa= structDisco.part[i].auxiliar-espa;
@@ -626,12 +634,13 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 	int i=0;
 	int a=0;
 	int j=0;
+
 //VERIFICA SI EL NOMBRE EXISTE
 	for(i=0;i<4;i++){
 	        if(strcasecmp(name, structDisco.part[i].name)==0){
 	            break;
 	        }
-	        for(j=0; j<8; j++){
+	        for(j=0; j<20; j++){
 	            if(strcasecmp(name, structDisco.part[i].exten[j].name)==0){
 	                a=1;
 	                break;
@@ -649,28 +658,29 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 //VERIFICAR SI EL ESPACIO ES SUFICIENTE
    if(a>0){
     if(bytes>0){
-		 if(j<7){
+		 if(j<7){ //j depende de donde encontro el nombre
 			 printf("j = %d\n",j);
-			 if(structDisco.part[i].exten[j+1].start!=0){ //
-			   int sig = structDisco.part[i].exten[j].start + structDisco.part[i].exten[j].auxiliar ;
-			   int ant = structDisco.part[i].exten[j+1].start;
+			 if(structDisco.part[i].exten[j+1].start!=0){ //Si no es la primer particion
+				   int sig = structDisco.part[i].exten[j].start + structDisco.part[i].exten[j].auxiliar ;
+				   int ant = structDisco.part[i].exten[j+1].start;
 
-			   int resta= ant-sig;
+				   int resta= ant-sig;
 
-			   if(resta<bytes){
-				   printf("ERROR: No hay espacio.\n");
-				   return 0;
-			   }
-			   structDisco.part[i].exten[j].auxiliar = structDisco.part[i].exten[j].auxiliar + bytes;
+				   if(resta<bytes){
+					   printf("ERROR: No hay espacio.\n");
+					   return 0;
+				   }
+				   structDisco.part[i].exten[j].auxiliar = structDisco.part[i].exten[j].auxiliar + bytes;
 
-			   if(structDisco.part[i].exten[j].auxiliar >  structDisco.part[i].exten[j].size){
-				   structDisco.part[i].exten[j].size = structDisco.part[i].exten[j].size + (structDisco.part[i].exten[j].auxiliar- structDisco.part[i].exten[j].size);
-			   }
+				   if(structDisco.part[i].exten[j].auxiliar >  structDisco.part[i].exten[j].size){
+					   structDisco.part[i].exten[j].size = structDisco.part[i].exten[j].size + (structDisco.part[i].exten[j].auxiliar - structDisco.part[i].exten[j].size);
+				   }
 
-			   }else{
-				  int j=0;
-				  int sum=0;
-					for(j=0; j<8; j++){
+			   }else{ //Si es la primer particion
+
+				   int j=0;
+				   int sum=0;
+					for(j=0; j<20; j++){
 						sum = sum +structDisco.part[i].exten[j].size;
 					}
 					int resta= structDisco.part[i].auxiliar-sum;
@@ -683,13 +693,13 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 						structDisco.part[i].exten[j].size= structDisco.part[i].exten[j].size+(structDisco.part[i].exten[j].auxiliar- structDisco.part[i].exten[j].size);
 					}
 			  }
-		 }else{
+		 }else{ //Si es la primera particion
 			 int j=0;
 			 int sum=0;
-		   for(j=0; j<8; j++){
-			   sum=sum +structDisco.part[i].exten[j].size;
+		   for(j=0; j<20; j++){
+			   sum = sum + structDisco.part[i].exten[j].size;
 		   }
-		   int resta= structDisco.part[i].auxiliar-sum;
+		   int resta = structDisco.part[i].auxiliar-sum;
 		   if(resta<bytes){
 			   printf("ERROR: No hay espacio.\n");
 			   return 0;
@@ -700,18 +710,18 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 		   }
 
 		 }
-    }else{
+    }else{//Si los bytes son 0
        if(j<7){
-			if(structDisco.part[i].exten[j+1].start!=0){
-				int resta= bytes+ structDisco.part[i].exten[j].auxiliar;
+			if(structDisco.part[i].exten[j+1].start!=0){//Si no es la primer particion
+				int resta= structDisco.part[i].exten[j].auxiliar + bytes;
 				if(resta>0){
 					structDisco.part[i].exten[j].auxiliar=resta;
 				}else{
 					printf("ERROR: No hay espacio para borrar.\n");
 					return 0;
 				}
-			}else{
-				int resta= bytes+ structDisco.part[i].exten[j].auxiliar;
+			}else{//Si es la primer particion
+				int resta = bytes + structDisco.part[i].exten[j].auxiliar;
 				if(resta>0){
 					structDisco.part[i].exten[j].auxiliar=resta;
 				structDisco.part[i].exten[j].size=resta;
@@ -762,7 +772,7 @@ int eliminarParticion(char* dele,char* path,char* name){
 	        if(strcasecmp(structDisco.part[i].name,name)==0){
 	            break;
 	        }
-	        for(j=0;j<8;j++){
+	        for(j=0;j<20;j++){
 	            if(strcasecmp(structDisco.part[i].exten[j].name,name)==0){
 	            	existe=1;
 	                break;
@@ -793,10 +803,12 @@ int eliminarParticion(char* dele,char* path,char* name){
 	return 1;
 }
 
-void montar(){
+void montarP(){
+
 	if(path==NULL || name ==NULL){
 		printf("ERROR: Falta un atributo obligatorio.\n");
 	}else{
+		printf("else\n");
 		int d =	montarParticion(path,name);
 		if(d==0){
 			printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
@@ -805,38 +817,137 @@ void montar(){
 }
 
 int montarParticion(char* path, char* name){
+//VERIFICA SI EXISTE EL DISCO
 	FILE* archivo;
 	archivo = fopen(path,"rb+");
 	    if(archivo== NULL){
-	         printf("ERROR: No existe el disco.\n");
+	        printf("ERROR: No existe el disco.\n");
 	        return 0;
 	    }
 	    mbr structDisco;
 	    fseek(archivo,0,SEEK_SET);
 	    fread(&structDisco,sizeof(mbr),1,archivo);
-	int aux=0;
+
+//VERIFICA SI EL NOMBRE DE LA PARTICION EXISTE
+	    int existe=0;
 	    int i=0;
 	    int j=0;
 	    for(i=0;i<4;i++){
 	        if(strcasecmp(structDisco.part[i].name,name)==0){
 	            break;
 	        }
-	        for(j=0;j<8;j++){
+	        for(j=0;j<20;j++){
 	            if(strcasecmp(structDisco.part[i].exten[j].name,name)==0){
-	                aux=1;
+	            	existe=1;
 	                break;
 	            }
-	            if(aux==1){
+	            if(existe==1){
 	                break;
 	            }
 	        }
 	    }
-	    if(i==4 && aux==0){
+	    if(i==4 && existe==0){
 	        printf("ERROR: El nombre no existe.\n");
 	        fclose(archivo);
 	        return 0;
 	 }
+
+//VERIFICA SI YA HAY UNA PARTE MONTADA
+	   int p=0;
+	   for(p=0;p<50;p++){
+	       if(strcasecmp(montar[p].path, path)==0 && strcasecmp(montar[p].name, name)==0 ){ //Busca el path y el nombre
+	          if(montar[p].estado=='1'){
+	              printf("-> Particion montada con exito.\n");
+	              printf(montar[p].id);
+	              printf("Disco = %d",montar[p].disco);
+	          }else{
+	        	  printf("-> Particion montada con exito.\n");
+	        	  montar[p].estado='1';
+	        	  printf(montar[p].id);
+	        	  printf("Disco = %d",montar[p].disco);
+	          }
+	          fclose(archivo);
+	         // conta(path,name,1);
+	          return 0;
+	       }
+	   }
+	   int a=0, c=0, d=0;
+	   int l=97;
+	   int v;
+	   int boolPath=0;
+
+//MONTRAR PARTICION
+	   for(a=0; a<50;a++){
+	      if(strcasecmp(montar[a].path, path)==0){
+	          d=a;
+	          c++;
+	          v= montar[a].var;
+	          boolPath =1;
+	          printf("c++\n");
+	    /*  }else if(strcasecmp(montar[a].path,"0")==0){
+	    	*/
+	      }else{
+	    	  //varLetra++;
+			   int po=a;
+			   int lx=0;
+			   for(po=a;po>=0;po--){
+				   if(strcasecmp(montar[a].path, montar[po].path)==0){
+					lx=1;
+				   }
+			   }
+			   if(lx==1){
+				  l++;
+			   }
+	      }
+	   }
+
+//SI EL DISCO NO ESTA GUARDADO
+	   printf("c= %d\n",c);
+	   if(c==0){ //Si no encontro el path
+		   for(a=0; a<50;a++){
+			  if(montar[a].uso=='0'){
+				  break;
+			  }
+		   }
+		   varLetra++;
+		   montar[a].var = varLetra;
+		   montar[a].estado='1';
+		   montar[a].uso='1';
+		   strcpy(montar[a].path,path);
+		   montar[a].disco=c+1;
+		   strcpy(montar[a].name,name);
+		   montar[a].id[0]='v';
+		   montar[a].id[1]='d';
+		   montar[a].id[2]=letras[varLetra];
+		   printf(montar[a].id);
+		   c++;
+		   printf("%i",c);
+
+		   printf("\nl = %d\n",l);
+	   }else{
+			 int ii=0;
+			 for(ii=0; ii<50;ii++){
+				if(montar[ii].uso=='0'){
+					break;
+				}
+			 }
+			 varLetra++;
+			 montar[a].var = varLetra;
+			 montar[ii].estado='1';
+			 montar[ii].uso='1';
+			 strcpy(montar[ii].path,path);
+			 montar[ii].disco=c+1;
+			 strcpy(montar[ii].name,name);
+			 strcpy(montar[ii].id,montar[d].id);
+			 printf(montar[ii].id);
+			 c++;
+			 printf("%i",c);
+	   }
+	   fclose(archivo);
+	   printf("-> Se monto la particion correctamente.\n");
+	   return 1;
 }
+
 
 void desmontar(){
 	if(path==NULL || name ==NULL){
@@ -851,4 +962,28 @@ void desmontar(){
 
 int desmontarParticion(char* path, char* name){
 
+
 }
+
+void generarReporte(){
+	if(path==NULL || name ==NULL|| id == NULL){
+		printf("ERROR: Falta un atributo obligatorio.\n");
+	}else{
+		if(strcasecmp(name, "mbr")==0 || strcasecmp(name, "MBR")==0 || strcasecmp(name, "mbr\n")==0 || strcasecmp(name, "MBR\n")==0){
+			printf("entro");
+			int d =	reporteMBR(id, name, path);
+			if(d==0){
+				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+			}
+		}else if(strcasecmp(name, "disk")==0 || strcasecmp(name, "DISK")==0 || strcasecmp(name, "Disk")==0){
+			int d =	reporteMBR(id, name, path);
+			if(d==0){
+				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+			}
+		}else{
+			printf("name = %s\n",name);
+			printf("x\n");
+		}
+	}
+}
+

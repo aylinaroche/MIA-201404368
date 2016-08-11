@@ -8,7 +8,10 @@
 #ifndef REPORTES_H_
 #define REPORTES_H_
 
-void reporte();
+
+int reporteMBR();
+int reporteDISK();
+int reporteEXEC();
 
 
 #endif /* REPORTES_H_ */

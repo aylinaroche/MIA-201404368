@@ -213,7 +213,8 @@ void verificarComando(char *com, char *atributos){
     	     }
     	 }
 			 imprimirDatos();
-			 montar();
+			// printf("m\n");
+			 montarP();
 
     } else  if(strcasecmp(com,"unmount")==0 ||strcasecmp(com,"UNMOUNT")==0 ||strcasecmp(com,"UNmount")==0  ){
              printf("unmount\n");
@@ -287,11 +288,12 @@ void verificarComando(char *com, char *atributos){
                    			 atributoDisco(com1);
                    	     }else if(i==2){
                    	    	 atributoDisco(com2);
-                   	     }else if(i==2){
-                   	    	 atributoDisco(com2);
+                   	     }else if(i==3){
+                   	    	 atributoDisco(com3);
                    	     }
                    	 }
                     imprimirDatos();
+                    generarReporte();
 
        }
     }

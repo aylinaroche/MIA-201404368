@@ -23,7 +23,7 @@ void adminParticion();
 int  crearParticion(char* path,char* name,char* size,char* unit,char* type,char* fit);
 int  agregarParticion(char* add,char* unit,char* path,char* name);
 int  eliminarParticion(char* delete,char* path,char* name);
-void montar();
+void montarP();
 int  montarParticion(char* path, char* name);
 void desmontar();
 int  desmontarParticion(char* path, char* name);

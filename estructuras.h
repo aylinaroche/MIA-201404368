@@ -14,6 +14,7 @@ typedef struct Montar{ //Cola para realizar el mount
     char path[50];
     char name[40];
     int  disco;
+    int  var;
     char id[4];
     char estado;
     char uso;
@@ -37,7 +38,7 @@ typedef struct PARTICION{
     int  size;
     int  auxiliar;
     char name[16];
-    ebr  exten[8];
+    ebr  exten[20];
 }particion;
 
 
