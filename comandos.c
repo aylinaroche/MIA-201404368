@@ -25,7 +25,7 @@ void verificarComando(char *com, char *atributos){
      int cont=1;
 
     if(strcasecmp(com,"mkdisk")==0 ||  strcasecmp(com,"Mkdisk")==0 || strcasecmp(com,"MKDISK")==0 || strcasecmp(com,"MKdisk")==0) {
-    printf("mkdisk\n");
+    //printf("mkdisk\n");
     char atr[200];
          strcpy(atr,atributos);
          int j;
@@ -74,7 +74,7 @@ void verificarComando(char *com, char *atributos){
     crearDisco();
 
     }else  if(strcasecmp(com,"rmdisk")==0 || strcasecmp(com,"Rmdisk")==0 || strcasecmp(com,"RMdisk")==0 || strcasecmp(com,"RMDISK")==0 ){
-    	 printf("rmdisk\n");
+    //	 printf("rmdisk\n");
     	    char atr[200];
     	         strcpy(atr,atributos);
     	         int j;
@@ -108,7 +108,7 @@ void verificarComando(char *com, char *atributos){
     	    eliminarDisco();
 
     } else  if(strcasecmp(com,"fdisk")==0 || strcasecmp(com,"Fdisk")==0 || strcasecmp(com,"FDISK")==0 || strcasecmp(com,"FDisk")==0 ){
-            printf("fdisk\n");
+      //      printf("fdisk\n");
             char atr[200];
                     strcpy(atr,atributos);
                     int j;
@@ -178,7 +178,7 @@ void verificarComando(char *com, char *atributos){
 
 
     } else  if(strcasecmp(com,"mount")==0 ||strcasecmp(com,"MOUNT")==0  ){
-    	 printf("mount\n");
+  //  	 printf("mount\n");
     	 char atr[200];
     	 strcpy(atr,atributos);
     	 int j;
@@ -215,9 +215,10 @@ void verificarComando(char *com, char *atributos){
 		//	 imprimirDatos();
 			// printf("m\n");
 			 montarP();
+			 metodoPrueba();
 
-    } else  if(strcasecmp(com,"unmount")==0 ||strcasecmp(com,"UNMOUNT")==0 ||strcasecmp(com,"UNmount")==0  ){
-             printf("unmount\n");
+    } else  if(strcasecmp(com,"umount")==0 ||strcasecmp(com,"UMOUNT")==0 ||strcasecmp(com,"UNmount")==0  ){
+          //   printf("unmount\n");
              char atr[200];
              strcpy(atr,atributos);
              int j;
@@ -230,31 +231,18 @@ void verificarComando(char *com, char *atributos){
              char aux[100];
              strcpy(aux, atributos);
              inst = strtok(atributos," ");
-              while(inst!=NULL){
+             while(inst!=NULL){
             	 inst = strtok(NULL, " ");
-            	 switch(cont){
-            	 case 1:
-            		 com1=inst;
-            		 break;
-            		 case 2:
-            			 com2=inst;
-            			 break;
+
+            	 if(cont>0){
+            		 atributoDisco(inst);
+            		 desmontar(inst);
             	 }
             	 cont++;
              }
-                	 int i;
-                	 for(i=1;i<cont-1;i++){
-                		 if(i==1){
-                			 atributoDisco(com1);
-                	     }else if(i==2){
-                	    	 atributoDisco(com2);
-                	     }
-                	 }
-         //        imprimirDatos();
-                 desmontar();
 
     } else  if(strcasecmp(com,"REP")==0 ||strcasecmp(com,"rep")==0){
-                printf("rep\n");
+          //      printf("rep\n");
                 char atr[200];
                 strcpy(atr,atributos);
                 int j;
@@ -295,5 +283,11 @@ void verificarComando(char *com, char *atributos){
                 //    imprimirDatos();
                     generarReporte();
 
-       }
+       }else  if(strcasecmp(com,"exec")==0 ||strcasecmp(com,"EXEC")==0){
+           //      printf("exec\n");
+
+
+
+
+        }
     }

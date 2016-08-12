@@ -89,6 +89,10 @@ void atributoDisco(char* coman){
         }else if(strcasecmp(token1,"-id")==0 || strcasecmp(token1,"–id")==0){
             token1=strtok(NULL,":");
             id=token1;
+        }else if(strcasecmp(token1,"-id1")==0 || strcasecmp(token1,"-id2")==0 || strcasecmp(token1,"-id3")==0 || strcasecmp(token1,"-id4")==0 || strcasecmp(token1,"-id5")==0 || strcasecmp(token1,"-id6")==0 || strcasecmp(token1,"-id7")==0|| strcasecmp(token1,"-id8")==0){
+            token1=strtok(NULL,":");
+            id=token1;
+
 }
 }
 
@@ -289,13 +293,7 @@ void metodoPrueba(){
 	printf("->> %s\n\n",buffer);*/
 	int i;
 	for(i=0;i<51; i++){
-			  printf("\nM= ");
-			  printf(montar[i].id);
-
-		   /*  if(montar[i].id[2]==nombre[2] &&  montar[i].disco==numID && montar[i].estado=='1'){
-		    	 direcc= montar[i].path;
-		     break;
-		  }*/
+			  printf("M%d= %s\n",i, montar[i].vdID);
 		 }
 }
 
@@ -663,7 +661,7 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 //VERIFICAR SI EL ESPACIO ES SUFICIENTE
    if(a>0){
     if(bytes>0){
-		 if(j<7){ //j depende de donde encontro el nombre
+		 if(j<20){ //j depende de donde encontro el nombre
 			 printf("j = %d\n",j);
 			 if(structDisco.part[i].exten[j+1].start!=0){ //Si no es la primer particion
 				   int sig = structDisco.part[i].exten[j].start + structDisco.part[i].exten[j].auxiliar ;
@@ -716,7 +714,7 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
 
 		 }
     }else{//Si los bytes son 0
-       if(j<7){
+       if(j<20){
 			if(structDisco.part[i].exten[j+1].start!=0){//Si no es la primer particion
 				int resta= structDisco.part[i].exten[j].auxiliar + bytes;
 				if(resta>0){
@@ -747,6 +745,10 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
        }
      }
     }
+
+   //*****************************************************
+
+
 	fseek(archivo,0,SEEK_SET);
 	fwrite(&structDisco,sizeof(mbr),1,archivo);
 	fclose(archivo);
@@ -791,6 +793,7 @@ int eliminarParticion(char* dele,char* path,char* name){
 	        printf("ERROR: No existe el nombre.\n");
 	       return 0;
 	    }
+//VERIFICA TIPO DE ELIMINAR
 	if(strcasecmp(dele,"full")==0){
 		tipoDelete=1;
 	}else if(strcasecmp(dele,"fast")==0){
@@ -798,6 +801,83 @@ int eliminarParticion(char* dele,char* path,char* name){
 	}else{
 	    printf("ERROR: Tipo de Delete incorrecto.\n");
 	   return 0;
+	}
+
+//SI EXISTE...
+
+	if(existe==1){
+		//si hay extendida
+	    if(j<20){ //i , j lugar donde encontro la particion
+	    	//LIMPIAR VARIABLES
+	        if( structDisco.part[i].exten[j+1].status!='0'){
+	        	structDisco.part[i].exten[j].status='0';
+	        	strcpy(structDisco.part[i].exten[j].name," ");
+	        }else{
+	        	structDisco.part[i].exten[j].status='0';
+	            structDisco.part[i].exten[j].start=0;
+	            structDisco.part[i].exten[j].size=0;
+	            structDisco.part[i].exten[j].auxiliar=0;
+	            strcpy(structDisco.part[i].exten[j].name," ");
+	        }
+	    }else{ //Si no hay extendida
+	        structDisco.part[i].exten[j].status='0';
+	        structDisco.part[i].exten[j].start=0;
+	        structDisco.part[i].exten[j].size=0;
+	        structDisco.part[i].exten[j].auxiliar=0;
+	        strcpy(structDisco.part[i].exten[j].name," ");
+	    }
+	}else{// Si no existe
+	    if(i<3){
+	         if( structDisco.part[i+1].status!='0'){
+	             if(structDisco.part[i].type=='e' ||structDisco.part[i].type=='E'){
+	                 int i1=0;
+	                 for(i1=0;i1<8;i1++){
+	                     structDisco.part[i].exten[i1].status='0';
+	                     structDisco.part[i].exten[i1].start=0;
+	                     structDisco.part[i].exten[i1].size=0;
+	                     structDisco.part[i].exten[i1].auxiliar=0;
+	                     strcpy(structDisco.part[i].exten[i1].name," ");
+	                 }
+	             }
+	             structDisco.part[i].status='0';
+	             structDisco.part[i].type='0';
+	             strcpy(structDisco.part[i].name," ");
+	         }else{
+	             if(structDisco.part[i].type=='e' ||structDisco.part[i].type=='E'){
+	                 int i1=0;
+	                 for(i1=0;i1<8;i1++){
+	                     structDisco.part[i].exten[i1].status='0';
+	                      structDisco.part[i].exten[i1].start=0;
+	                      structDisco.part[i].exten[i1].size=0;
+	                      structDisco.part[i].exten[i1].auxiliar=0;
+	                     strcpy(structDisco.part[i].exten[i1].name," ");
+	                 }
+	             }
+	             structDisco.part[i].status='0';
+	             structDisco.part[i].start=0;
+	             structDisco.part[i].size=0;
+	             structDisco.part[i].auxiliar=0;
+	             structDisco.part[i].type='0';
+	             strcpy(structDisco.part[i].name," ");
+	         }
+	    }else{
+	        if(structDisco.part[i].type=='e' ||structDisco.part[i].type=='E'){
+	            int i1=0;
+	            for(i1=0;i1<8;i1++){
+	                structDisco.part[i].exten[i1].status='0';
+	                 structDisco.part[i].exten[i1].start=0;
+	                 structDisco.part[i].exten[i1].size=0;
+	                 structDisco.part[i].exten[i1].auxiliar=0;
+	                strcpy(structDisco.part[i].exten[i1].name," ");
+	            }
+	        }
+	        structDisco.part[i].status='0';
+	        structDisco.part[i].start=0;
+	        structDisco.part[i].size=0;
+	        structDisco.part[i].auxiliar=0;
+	        structDisco.part[i].type='0';
+	        strcpy(structDisco.part[i].name," ");
+	    }
 	}
 
 	fseek(archivo,0,SEEK_SET);
@@ -835,13 +915,13 @@ int montarParticion(char* path, char* name){
 //VERIFICA SI EL NOMBRE DE LA PARTICION EXISTE
     int boolExten=0;
     int i=0;
-    int ii=0;
+    int j=0;
     for(i=0;i<4;i++){
         if(strcasecmp(structDisco.part[i].name, name)==0){
             break;
         }
-        for(ii=0;ii<20;ii++){
-            if(strcasecmp(structDisco.part[i].exten[ii].name,name)==0){
+        for(j=0;j<20;j++){
+            if(strcasecmp(structDisco.part[i].exten[j].name,name)==0){
             	boolExten=1;
                 break;
             }
@@ -860,7 +940,7 @@ int montarParticion(char* path, char* name){
     for(pop=0;pop<51;pop++){
 
     	if(strcasecmp(montar[pop].path, path)==0 && strcasecmp(montar[pop].name, name)==0 ){
-           if(montar[pop].estado=='1'){
+           if(montar[pop].estado==1){
                printf("-> La particion ya esta montada:: %s\n",montar[pop].vdID);
 
             //   printf("%d",montar[pop].disco);
@@ -994,18 +1074,34 @@ char *letraDisco(int varLetra){
 }
 
 void desmontar(){
-	if(path==NULL || name ==NULL){
+	if(id==NULL){
 		printf("ERROR: Falta un atributo obligatorio.\n");
 	}else{
-		int d =	desmontarParticion(path,name);
+		int d =	desmontarParticion(id);
 		if(d==0){
 			printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
 		}
 	}
 }
 
-int desmontarParticion(char* path, char* name){
-
+int desmontarParticion(char* id){
+printf("des\n");
+	int i=0;
+	for(i=0;i<51; i++){
+		if(montar[i].vdID!=NULL){
+			printf("NOT NULL -> %s - %s",montar[i].vdID,id);
+			 if(strcasecmp(montar[i].vdID,id)==0){
+				 printf("igual\n");
+				 if(montar[i].estado==1){
+					 montar[i].estado=0;
+					 printf("-> Se ha desmontado la particion correctamente.\n");
+					 return 1;
+				 }
+			 }
+		}
+	 }
+	 printf("ERROR: El ID no existe.\n");
+	 return 0;
 
 }
 
@@ -1020,8 +1116,8 @@ void generarReporte(){
 			if(d==0){
 				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
 			}
-		}else if(strcasecmp(name, "disk")==0 || strcasecmp(name, "DISK")==0 || strcasecmp(name, "Disk")==0){
-			int d =	reporteMBR(id, name, path);
+		}else if(strcasecmp(name, "disk")==0 || strcasecmp(name, "DISK")==0 || strcasecmp(name, "Disk\n")==0){
+			int d =	reporteDISK(id, name, path);
 			if(d==0){
 				printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
 			}
@@ -1033,8 +1129,15 @@ void generarReporte(){
 }
 
 int aleatorio(){
+
 	srand(time(NULL)); //El mayordomo pone a girar la diana
 	int test = rand() % 20;
 
 	return test;
 }
+
+void ejecutarScript(){
+
+}
+
+

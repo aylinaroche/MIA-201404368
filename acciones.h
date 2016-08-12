@@ -28,11 +28,12 @@ int  eliminarParticion(char* delete,char* path,char* name);
 void montarP();
 int  montarParticion(char* path, char* name);
 void desmontar();
-int  desmontarParticion(char* path, char* name);
+int  desmontarParticion(char* id);
 int  mm(char*pa,char*name);
 int  miMontar(char *path, char *name);
 char *letraDisco(int varLetra);
 int aleatorio();
+void ejecutarScript();
 
 
 mount montar[50];
