@@ -11,12 +11,14 @@
 #include <time.h>
 
 typedef struct Montar{ //Cola para realizar el mount
-    char path[50];
+    char path[70];
     char name[40];
     int  disco;
     int  var;
+    int  part;
     char id[4];
-    char estado;
+    char *vdID;
+    int  estado;
     char uso;
 }mount;
 

@@ -70,7 +70,7 @@ void verificarComando(char *com, char *atributos){
     	atributoDisco(com4);
     	}
     }
-    imprimirDatos();
+   // imprimirDatos();
     crearDisco();
 
     }else  if(strcasecmp(com,"rmdisk")==0 || strcasecmp(com,"Rmdisk")==0 || strcasecmp(com,"RMdisk")==0 || strcasecmp(com,"RMDISK")==0 ){
@@ -104,7 +104,7 @@ void verificarComando(char *com, char *atributos){
     	    	atributoDisco(com1);
     	    	}
     	    }
-    	    imprimirDatos();
+    	 //   imprimirDatos();
     	    eliminarDisco();
 
     } else  if(strcasecmp(com,"fdisk")==0 || strcasecmp(com,"Fdisk")==0 || strcasecmp(com,"FDISK")==0 || strcasecmp(com,"FDisk")==0 ){
@@ -173,7 +173,7 @@ void verificarComando(char *com, char *atributos){
                	atributoDisco(com8);
                	}
                }
-               imprimirDatos();
+         //      imprimirDatos();
                adminParticion();
 
 
@@ -212,7 +212,7 @@ void verificarComando(char *com, char *atributos){
     	    	 atributoDisco(com2);
     	     }
     	 }
-			 imprimirDatos();
+		//	 imprimirDatos();
 			// printf("m\n");
 			 montarP();
 
@@ -250,7 +250,7 @@ void verificarComando(char *com, char *atributos){
                 	    	 atributoDisco(com2);
                 	     }
                 	 }
-                 imprimirDatos();
+         //        imprimirDatos();
                  desmontar();
 
     } else  if(strcasecmp(com,"REP")==0 ||strcasecmp(com,"rep")==0){
@@ -292,7 +292,7 @@ void verificarComando(char *com, char *atributos){
                    	    	 atributoDisco(com3);
                    	     }
                    	 }
-                    imprimirDatos();
+                //    imprimirDatos();
                     generarReporte();
 
        }

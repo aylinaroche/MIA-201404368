@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include "string.h"
 #include <time.h>
+#include "estructuras.h"
+//#include "acciones.c"
 
 
 void atributoDisco(char* coman);
@@ -17,7 +19,7 @@ void crearDisco();
 int  crearArchivoBinario(char* size, char* unit, char* path, char* nom);
 void imprimirDatos();
 void limpiarVariables();
-void metodoPrueba(FILE *f1);
+void metodoPrueba();
 int  eliminarDisco();
 void adminParticion();
 int  crearParticion(char* path,char* name,char* size,char* unit,char* type,char* fit);
@@ -27,6 +29,12 @@ void montarP();
 int  montarParticion(char* path, char* name);
 void desmontar();
 int  desmontarParticion(char* path, char* name);
+int  mm(char*pa,char*name);
+int  miMontar(char *path, char *name);
+char *letraDisco(int varLetra);
+int aleatorio();
 
+
+mount montar[50];
 
 #endif /* ACCIONES_H_ */
