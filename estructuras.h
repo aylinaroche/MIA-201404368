@@ -13,13 +13,11 @@
 typedef struct Montar{ //Cola para realizar el mount
     char path[70];
     char name[40];
-    int  disco;
     int  var;
     int  part;
-    char id[4];
     char *vdID;
     int  estado;
-    char uso;
+    int	 uso;
 }mount;
 
 typedef struct EBR{

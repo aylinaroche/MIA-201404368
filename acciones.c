@@ -22,78 +22,112 @@ char* id=NULL;
 int boolCrearDisco=1;
 int varLetra=0;
 
+boolExec=0;
+
+void atributoExec(char* coman){
+	char* token1;
+	token1=strtok(coman,"\n");
+
+	path=token1;
+
+}
+
 void atributoDisco(char* coman){
 //printf("atributo disco %s\n",coman);
         char* token1;
         char* com=coman;
         token1=strtok(com,":");
         //printf("T = %s\n",token1);
-        if(token1==NULL){ }else
-        if(strcasecmp(token1,"-size")==0 || strcasecmp(token1,"–size")==0){ //Verifica cada atributo
-            token1=strtok(NULL,":");
-            size=token1;
-        }else if(strcasecmp(token1,"+unit")==0){
-            token1=strtok(NULL,":");
-            unit=token1;
-        }else if(strcasecmp(token1,"-path")==0 || strcasecmp(token1,"–path")==0){
-             token1=strtok(NULL,":");
+        if(token1!=NULL){
+			if(strcasecmp(token1,"-size")==0 || strcasecmp(token1,"–size")==0){ //Verifica cada atributo
+				token1=strtok(NULL,":");
+				size=token1;
+			}else if(strcasecmp(token1,"+unit")==0){
+				token1=strtok(NULL,":");
+				unit=token1;
+			}else if(strcasecmp(token1,"-path")==0 || strcasecmp(token1,"–path")==0){
+				 token1=strtok(NULL,":");
 
-             char direccion[200];
-              strcpy(direccion,token1);
-              if(direccion[0]=='"'){
-            int i=0;
-              while(direccion[i+1]!='"'){ //Le quita las comillas
-                  direccion[i]=direccion[i+1];
-                  if(direccion[i]==' '){
-                   direccion[i]='_';
-                  }
-               i++;
-              }
-              direccion[i]='\0';
-              direccion[i+1]='\0';
-              }
-           strcpy(token1,direccion);
-       path=token1;
-       }else if(strcasecmp(token1,"+type")==0){
-            token1=strtok(NULL,":");
-            type=token1;
-        }else if(strcasecmp(token1,"+fit")==0){
-            token1=strtok(NULL,":");
-            fit=token1;
-        }else if(strcasecmp(token1,"+delete")==0){
-            token1=strtok(NULL,":");
-            dele=token1;
-        }else if(strcasecmp(token1,"-name")==0 || strcasecmp(token1,"–name")==0){
-            token1=strtok(NULL,":");
-          //  printf("tok1 = %s\n",token1);
-            char nombre[200];
-            strcpy(nombre,token1);
-            if(nombre[0]=='"'){
-            int i=0;
-                  while(nombre[i+1]!='"'){ //Le quita las comillas
-                     	nombre[i]=nombre[i+1];
-                        if(nombre[i]==' '){
-                          	nombre[i]='_';
-                        }
-                         i++;
-                   }
-                  nombre[i]='\0';
-                  nombre[i+1]='\0';
-             }
-         //   printf("tok1 = %s\n",token1);
-             strcpy(token1,nombre);
-            name=token1;
-        }else if(strcasecmp(token1,"+add")==0){
-            token1=strtok(NULL,":");
-            add=token1;
-        }else if(strcasecmp(token1,"-id")==0 || strcasecmp(token1,"–id")==0){
-            token1=strtok(NULL,":");
-            id=token1;
-        }else if(strcasecmp(token1,"-id1")==0 || strcasecmp(token1,"-id2")==0 || strcasecmp(token1,"-id3")==0 || strcasecmp(token1,"-id4")==0 || strcasecmp(token1,"-id5")==0 || strcasecmp(token1,"-id6")==0 || strcasecmp(token1,"-id7")==0|| strcasecmp(token1,"-id8")==0){
-            token1=strtok(NULL,":");
-            id=token1;
+				 char direccion[200];
+				  strcpy(direccion,token1);
+				  if(direccion[0]=='"'){
+				int i=0;
+				  while(direccion[i+1]!='"'){ //Le quita las comillas
+					  direccion[i]=direccion[i+1];
+					  if(direccion[i]==' '){
+					   direccion[i]='_';
+					  }
+				   i++;
+				  }
+				  direccion[i]='\0';
+				  direccion[i+1]='\0';
+				  }
+			   strcpy(token1,direccion);
+			   path=token1;
+		   }else if(strcasecmp(token1,"+type")==0){
+				token1=strtok(NULL,":");
+				type=token1;
+			}else if(strcasecmp(token1,"+fit")==0){
+				token1=strtok(NULL,":");
+				fit=token1;
+			}else if(strcasecmp(token1,"+delete")==0){
+				token1=strtok(NULL,":");
+				dele=token1;
+			}else if(strcasecmp(token1,"-name")==0 || strcasecmp(token1,"–name")==0){
+				token1=strtok(NULL,":");
+			  //  printf("tok1 = %s\n",token1);
+				char nombre[200];
+				strcpy(nombre,token1);
+				if(nombre[0]=='"'){
+				int i=0;
+					  while(nombre[i+1]!='"'){ //Le quita las comillas
+							nombre[i]=nombre[i+1];
+							if(nombre[i]==' '){
+								nombre[i]='_';
+							}
+							 i++;
+					   }
+					  nombre[i]='\0';
+					  nombre[i+1]='\0';
+				 }
+			 //   printf("tok1 = %s\n",token1);
+				 strcpy(token1,nombre);
+				name=token1;
+			}else if(strcasecmp(token1,"+add")==0){
+				token1=strtok(NULL,":");
+				add=token1;
+			}else if(strcasecmp(token1,"-id")==0 || strcasecmp(token1,"–id")==0){
+				token1=strtok(NULL,":");
+				id=token1;
+			}else if(strcasecmp(token1,"-id1")==0 || strcasecmp(token1,"-id2")==0 || strcasecmp(token1,"-id3")==0 || strcasecmp(token1,"-id4")==0 || strcasecmp(token1,"-id5")==0 || strcasecmp(token1,"-id6")==0 || strcasecmp(token1,"-id7")==0|| strcasecmp(token1,"-id8")==0){
+				token1=strtok(NULL,":");
+				id=token1;
 
-}
+			}else if(boolExec==1){ //********* XXX
+				token1=strtok(NULL,":");
+				printf("token1=%s\n",token1);
+				char direccion[200];
+				strcpy(direccion,token1);
+
+				if(direccion[0]=='"'){
+					int i=0;
+					while(direccion[i+1]!='"'){ //Le quita las comillas
+						direccion[i]=direccion[i+1];
+						if(direccion[i]==' '){
+							direccion[i]='_';
+						}
+						i++;
+					}
+				 direccion[i]='\0';
+				 direccion[i+1]='\0';
+				 }
+				  strcpy(token1,direccion);
+				  path=token1;
+
+        }else{
+        	printf("ERROR: El atributo \"%s\" es incorrecto.\n",token1);
+        }
+      }
 }
 
 void crearDisco(){
@@ -169,8 +203,8 @@ if(boolCrearDisco ==1){
 		   direcc2[i] ='\0';
 	   }
 	   strcat(name, ".dsk");
-	   printf("name=%s\n",name);
-	   strcat(path, name);
+	   //printf("name=%s\n",name);
+	  // strcat(path, name);
 	  //strcat(path, ".")
 	 // printf("PATH = %s\n",path);
  	  strcpy(direcc, path);
@@ -181,13 +215,16 @@ if(boolCrearDisco ==1){
 			  char *aux= (char*)malloc(200);
 			  strcpy(aux,"mkdir ");
 			  strcat(aux,direcc2);
-			  printf("direccion: %s\n",aux);
+			  printf("Ruta de Archivo: %s\n",aux);
 			  system(aux);
 			  free(aux);
-		  }
+	/*	  }else if(direcc[i]==' '){
+			  printf("espacio");*/
+		  }else{
 		  direcc2[i]=direcc[i];
-		  if(direcc[i]=='\0'){
-			  break;
+			  if(direcc[i]=='\0'){
+				  break;
+			  }
 		  }
 	  }
 
@@ -225,9 +262,10 @@ if(boolCrearDisco ==1){
 		  }
 
 	   FILE *disco;
+	//   printf("P = %s\n",path);
 	   disco = fopen(path,"wb+");
 	   if(disco){
-		   printf("-> Se creo el archivo correctamente.\n");
+	//	   printf("-> Se creo el archivo correctamente.\n");
 	   }else{
 		   printf("ERROR: Al crear archivo.\n");
 		   return 0;
@@ -298,29 +336,29 @@ void metodoPrueba(){
 }
 
 int eliminarDisco(){
-    FILE* disco;
-    disco = fopen(path,"wb+");
-    if(disco== NULL){
-      printf("ERROR: No existe el Disco.\n");
-      return 0;
+ FILE* archivo;
+    archivo = fopen(path,"rb+");
+    if(archivo== NULL){
+        printf("ERROR: No existe el disco.\n");
+        return 0;
     }else{
-        if(strcmp(path,"/home/aylin")==0||strcmp(path,"/home/aylin/")==0){
-        printf("ERROR: Ingrese una direccion valida.\n");
-        }else{
+       // if(strcmp(path,"/home/aylin")==0||strcmp(path,"/home/aylin/")==0){
+        //printf("ERROR: Ingrese una direccion valida.\n");
+        //}else{
             char com[5];
-            printf("\n-> Desea eliminar el disco [s/n]: \n");
+            printf("-> ¿Desea continuar? [S/n]: \n");
            fgets(com,5,stdin);
            if(com[0]=='s' || com[0]=='S'){
-        char* aux;
-        aux = (char*)malloc(160);
-        strcpy(aux,"rm ");
-        strcat(aux, path);
-        system(aux);
-        printf("-> Disco eliminado con exito.\n");
-          }else{
-          printf("-> No se elimino el disco.\n");
-           }
-    }}
+				char* aux;
+				aux = (char*)malloc(160);
+				strcpy(aux,"rm ");
+				strcat(aux, path);
+				system(aux);
+				printf("-> Disco eliminado con exito.\n");
+           }else{
+        	   	printf("-> No se elimino el disco.\n");
+		   }
+    }
     return 1;
 }
 
@@ -942,14 +980,7 @@ int montarParticion(char* path, char* name){
     	if(strcasecmp(montar[pop].path, path)==0 && strcasecmp(montar[pop].name, name)==0 ){
            if(montar[pop].estado==1){
                printf("-> La particion ya esta montada:: %s\n",montar[pop].vdID);
-
-            //   printf("%d",montar[pop].disco);
            }else{
-        	   /*printf("particion montarada \n");
-        	   montar[pop].estado='1';
-        	   printf(montar[pop].id);
-        	   printf("%d",montar[pop].disco);
-        	   */
            }
            fclose(archivo);
            return 0;
@@ -960,25 +991,22 @@ int montarParticion(char* path, char* name){
 
     for(a=0; a<51;a++){
        if(strcasecmp(montar[a].path,path)==0){
-          // d=a;
     	   c++;
            boolExistePath=1;
            v = montar[a].var;
-       }else if(strcasecmp(montar[a].path,"0")==0){
-       }else{
+        }else{
        }
     }
 
     if(boolExistePath==1){
 		for(a=0; a<50;a++){
-		   if(montar[a].uso=='0'){
+		   if(montar[a].uso==0=='0'){
 			   break;
 		   }
-		}
+	}
 		montar[a].estado=1;
 		montar[a].uso='1';
 		strcpy(montar[a].path,path);
-		montar[a].disco=c+1;
 		strcpy(montar[a].name,name);
 		int p = montar[a].part;
 		p = p +1;
@@ -992,13 +1020,12 @@ int montarParticion(char* path, char* name){
 		char *str = (char *) malloc(1 + strlen(letra)+ strlen(num) );
 		strcpy(str, letra);
 		strcat(str, num);
-		montar[a].vdID =str;
-		printf("YEAH = %s\n",str);
+		montar[a].vdID =str;		printf("-> Se monto la particion con id::%s correctamente.\n",str);
 
 
     }else{
     	for(a=0; a<50;a++){
-		   if(montar[a].uso=='0'){
+		   if(montar[a].uso==0){
 			   break;
 		   }
 		}
@@ -1019,12 +1046,10 @@ int montarParticion(char* path, char* name){
 		strcpy(str, letra);
 		strcat(str, num);
 		montar[a].vdID =str;
-		printf("WUJU = %s\n",str);
-
+		printf("-> Se monto la particion con id::%s correctamente.\n",str);
     }
 
     fclose(archivo);
-    printf("-> Se monto la particion correctamente.\n");
 	return 1;
 }
 
@@ -1089,7 +1114,7 @@ printf("des\n");
 	int i=0;
 	for(i=0;i<51; i++){
 		if(montar[i].vdID!=NULL){
-			printf("NOT NULL -> %s - %s",montar[i].vdID,id);
+			printf("NOT NULL -> %s-%s-",montar[i].vdID,id);
 			 if(strcasecmp(montar[i].vdID,id)==0){
 				 printf("igual\n");
 				 if(montar[i].estado==1){
@@ -1136,7 +1161,75 @@ int aleatorio(){
 	return test;
 }
 
-void ejecutarScript(){
+void script(){
+
+	if(path==NULL){
+		printf("ERROR: Falta un atributo obligatorio.\n");
+	}else{
+		int d =	ejecutarScript(path);
+		if(d==0){
+			printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
+		}
+	}
+}
+
+int ejecutarScript(char *path){
+	//printf("P=%s\n",path);
+	  FILE* archivo;
+	  char caracter[1000];
+	  archivo = fopen(path,"r+");
+	  if(archivo== NULL){
+	     printf("ERROR: No existe el archivo.\n");
+	     return 0;
+	  }else{
+	        int j=0;
+	               for( j=0;j<1000;j++){
+	                       caracter[j] = '\0';
+	               }
+	        int i=0;
+	        while (feof(archivo) == 0) {// *feof* hasta que se acabe el archivo
+	        	caracter[i] = fgetc(archivo); // *fgetc* lee lineapor linea
+	        	printf(&caracter[i]);
+	        	caracter[i]= tolower(caracter[i]);
+	            if(caracter[i]=='\n'){
+	            	//printf("\n");
+	            	char com[1000];
+	            	char com2[1000];
+	            	caracter[i]='\0';
+	            	strcpy(com,caracter);
+	            	strcpy(com2, com);
+	            	char *comando = NULL;
+	            	comando = strtok( com, " ");
+	            	char *atr;
+	            	if(comando!=NULL){
+	            		atr = com2;
+	            	//	printf("ATR=%s\n",comando);
+	            		verificarComando(comando, atr);
+	            	}
+
+	                for( j=0;j<1000;j++){
+	                        caracter[j] = '\0';
+	                }
+	              printf("\n");
+	                i=0;
+	            }else if(caracter[i]=='\\'){
+	                i++;
+	                caracter[i] = ' ';
+	                 printf(&caracter[i]);
+	                 while(feof(archivo) == 0 && fgetc(archivo)!='\n'){
+	                	 caracter[i] = fgetc(archivo);
+	                	 printf(&caracter[i]);
+	                     caracter[i]= tolower(caracter[i]);
+	                     i++;
+	                }
+	               caracter[i] = ' ';
+	               printf(&caracter[i]);
+	               i++;
+	            }else{
+	            	i++;
+	            }
+	             }
+	    }
 
 }
 

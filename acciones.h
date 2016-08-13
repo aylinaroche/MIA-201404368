@@ -33,9 +33,11 @@ int  mm(char*pa,char*name);
 int  miMontar(char *path, char *name);
 char *letraDisco(int varLetra);
 int aleatorio();
-void ejecutarScript();
+void script();
+int ejecutarScript(char *path);
+void atributoExec(char* coman);
 
-
+int boolExec;
 mount montar[50];
 
 #endif /* ACCIONES_H_ */

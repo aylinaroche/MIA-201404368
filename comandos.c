@@ -84,7 +84,7 @@ void verificarComando(char *com, char *atributos){
     	         }
     	         }
     	     strcpy(atributos,atr);
-    	     printf("ATR= %s\n",atributos);
+    	   //  printf("ATR= %s\n",atributos);
     	    char aux[100];
     	    strcpy(aux, atributos);
     	    inst = strtok(atributos," ");
@@ -284,10 +284,41 @@ void verificarComando(char *com, char *atributos){
                     generarReporte();
 
        }else  if(strcasecmp(com,"exec")==0 ||strcasecmp(com,"EXEC")==0){
-           //      printf("exec\n");
+                // printf("exec\n");
 
+                 char atr[200];
+                 strcpy(atr,atributos);
+                 int j;
+                 for(j=0;j<200;j++){
+                	 if(atr[j]=='\\'){
+                		 atr[j]=' ';
+                	 }
+                 }
 
+                 strcpy(atributos,atr);
+                 char aux[100];
+                 strcpy(aux, atributos);
+                 inst = strtok(atributos," ");
+                  while(inst!=NULL){
+                	 inst = strtok(NULL, " ");
+                	 switch(cont){
+                	 	 case 1:
+                	 		 com1=inst;
+                	 		 break;
+                	 }
+                	 cont++;
+                 }
+                 // boolExec=1;
+                  int i;
+                  for(i=1;i<cont-1;i++){
+                	  if(i==1){
+                	//	  printf("a==%s\n",com1);
+                		  atributoDisco(com1);
 
+                	  }
+                  }
+            //      imprimirDatos();
+                  script();
 
         }
     }
