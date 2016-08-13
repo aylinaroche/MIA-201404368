@@ -34,7 +34,7 @@ void atributoExec(char* coman){
 
 void atributoDisco(char* coman){
 //printf("atributo disco %s\n",coman);
-        char* token1;
+        char* token1 = tolower(coman);
         char* com=coman;
         token1=strtok(com,":");
         //printf("T = %s\n",token1);
@@ -151,36 +151,35 @@ void crearDisco(){
 }
 
 int crearArchivoBinario(char* size, char* unit, char* path, char* name){
- int unidad=0;
- int tam=atoi(size);
 
- //COMPROBAR POSIBLES ERRORES
- printf("unit =%s\n",unit);
-    if(strcasecmp(unit,"m\n")==0 || strcasecmp(unit,"m")==0 ){
-    	unidad =1;
-    	if(tam<10){
-    		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
-    		 boolCrearDisco =0;
-    		 return 0;
-    	}
+	int unidad=0;
+int tam=atoi(size);
 
-    }else if(strcasecmp(unit,"k\n")==0 || strcasecmp(unit,"k")==0 ){
-    	unidad=2;
-    	if(tam<10240){
-    		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
-    		 boolCrearDisco =0;
-    		 return 0;
-    	}
-    }else{
-        printf("ERROR: La unidad no existe. \n");
-        boolCrearDisco =0;
-        return 0;
-    }
-    char* ext=NULL;
-    ext=name;
-    int boolExt=0;
+//COMPROBAR POSIBLES ERRORES
+   if(strcmp(unit,"M")==0 || strcmp(unit,"m")==0 ){
+   	unidad =1;
+   	if(tam<10){
+   		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
+   		 boolCrearDisco =0;
+   		 return 0;
+   	}
+   }  else if(strcmp(unit,"K")==0 || strcmp(unit,"k")==0 ){
+   	unidad=2;
+   	if(tam<10240){
+   		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
+   		 boolCrearDisco =0;
+   		 return 0;
+   	}
+   }else{
+       printf("ERROR: La unidad no existe. \n");
+       boolCrearDisco =0;
+       return 0;
+   }
+   char* ext=NULL;
+   ext=name;
+   int boolExt=0;
 
-  ext = strtok(name,".");
+   ext = strtok(name,".");
  // printf("Ext=%s\n",ext);
     while(ext!=NULL){
     	ext = strtok(NULL,".");
@@ -365,7 +364,6 @@ int eliminarDisco(){
     return 1;
 }
 
-
 void adminParticion(){
 	//Atributos opcionales
 	 if(unit==NULL){
@@ -538,7 +536,7 @@ int crearParticion(char* path, char* name,char* size,char* unit,char* type,char*
           contParticion++;
       }
   }
-  if(contParticion==4){
+  if(contParticion==4 && tipo!=2){
       printf("ERROR: Ya existen 4 particiones.\n");
       return 0;
   }
