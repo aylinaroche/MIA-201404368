@@ -155,14 +155,16 @@ int crearArchivoBinario(char* size, char* unit, char* path, char* name){
  int tam=atoi(size);
 
  //COMPROBAR POSIBLES ERRORES
-    if(strcmp(unit,"M")==0 || strcmp(unit,"m")==0 ){
+ printf("unit =%s\n",unit);
+    if(strcasecmp(unit,"m\n")==0 || strcasecmp(unit,"m")==0 ){
     	unidad =1;
     	if(tam<10){
     		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
     		 boolCrearDisco =0;
     		 return 0;
     	}
-    }  else if(strcmp(unit,"K")==0 || strcmp(unit,"k")==0 ){
+
+    }else if(strcasecmp(unit,"k\n")==0 || strcasecmp(unit,"k")==0 ){
     	unidad=2;
     	if(tam<10240){
     		printf("ERROR: El tamanio minimo para un disco es de 10Mb o 10240Kb.\n");
@@ -184,7 +186,7 @@ int crearArchivoBinario(char* size, char* unit, char* path, char* name){
     	ext = strtok(NULL,".");
     //	printf("ex =%s\n",ext);
     	if(ext!=NULL){
-			if(strcmp(ext,"dsk")==0){
+			if(strcasecmp(ext,"dsk")==0){
 				boolExt=1;
 			}
     	}
@@ -205,7 +207,7 @@ if(boolCrearDisco ==1){
 	   }
 	   strcat(name, ".dsk");
 	   //printf("name=%s\n",name);
-	  // strcat(path, name);
+	   strcat(path, name);
 	  //strcat(path, ".")
 	 // printf("PATH = %s\n",path);
  	  strcpy(direcc, path);
@@ -343,7 +345,7 @@ int eliminarDisco(){
         printf("ERROR: No existe el disco.\n");
         return 0;
     }else{
-       // if(strcmp(path,"/home/aylin")==0||strcmp(path,"/home/aylin/")==0){
+       // if(strcasecmp(path,"/home/aylin")==0||strcasecmp(path,"/home/aylin/")==0){
         //printf("ERROR: Ingrese una direccion valida.\n");
         //}else{
             char com[5];
@@ -787,8 +789,41 @@ int agregarParticion(char* add,char* unit,char* path,char* name){
            }
        }
      }
-    }
+    }else{
+        if(bytes>0){
+         if(i<3){
+             if(structDisco.part[i+1].start!=0){
+          int sig = structDisco.part[i].auxiliar+structDisco.part[i].start;
+          int ant = structDisco.part[i+1].start;
+          int resta= ant-sig;
+          if(resta<bytes){
+              printf("No hay espacio ");
+             return 0;
+          }
+          structDisco.part[i].auxiliar=structDisco.part[i].auxiliar+bytes;
+          if(structDisco.part[i].auxiliar> structDisco.part[i].size){
+           structDisco.part[i].size= structDisco.part[i].size+(structDisco.part[i].auxiliar- structDisco.part[i].size);
+          }
+            }else{
+                 int i2=0;
+                 int sum=0;
+               for(i2=0; i2<4; i2++){
+                   sum=sum +structDisco.part[i2].size;
+               }
+               int resta= structDisco.size-sum;
+               if(resta<bytes){
+                   printf("No hay espacio ");
+                  return 0;
+               }
+             structDisco.part[i].auxiliar = structDisco.part[i].auxiliar+bytes;
+               if(structDisco.part[i].auxiliar> structDisco.part[i].size){
+                structDisco.part[i].size= structDisco.part[i].size+(structDisco.part[i].auxiliar- structDisco.part[i].size);
+               }
+            }
+          }
+     }
 
+    }
    //*****************************************************
 
 
@@ -817,6 +852,18 @@ int eliminarParticion(char* dele,char* path,char* name){
 	    int i=0;
 	    int j=0;
 
+//VERIFICA TIPO DE ELIMINAR
+		if(strcasecmp(dele,"full")==0){
+			tipoDelete=1;
+		}else if(strcasecmp(dele,"fast")==0){
+			tipoDelete=2;
+		}else{
+		    printf("ERROR: Tipo de Delete incorrecto.\n");
+		   return 0;
+		}
+
+
+
 //VERIFICA SI EL NOMBRE EXISTE
 	    for(i=0;i<4;i++){
 	        if(strcasecmp(structDisco.part[i].name,name)==0){
@@ -836,15 +883,7 @@ int eliminarParticion(char* dele,char* path,char* name){
 	        printf("ERROR: No existe el nombre.\n");
 	       return 0;
 	    }
-//VERIFICA TIPO DE ELIMINAR
-	if(strcasecmp(dele,"full")==0){
-		tipoDelete=1;
-	}else if(strcasecmp(dele,"fast")==0){
-		tipoDelete=2;
-	}else{
-	    printf("ERROR: Tipo de Delete incorrecto.\n");
-	   return 0;
-	}
+
 
 //SI EXISTE...
 
