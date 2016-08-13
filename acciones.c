@@ -100,6 +100,7 @@ void atributoDisco(char* coman){
 				token1=strtok(NULL,":");
 				id=token1;
 			}else if(strcasecmp(token1,"-id1")==0 || strcasecmp(token1,"-id2")==0 || strcasecmp(token1,"-id3")==0 || strcasecmp(token1,"-id4")==0 || strcasecmp(token1,"-id5")==0 || strcasecmp(token1,"-id6")==0 || strcasecmp(token1,"-id7")==0|| strcasecmp(token1,"-id8")==0){
+
 				token1=strtok(NULL,":");
 				id=token1;
 
@@ -330,7 +331,7 @@ void metodoPrueba(){
 
 	printf("->> %s\n\n",buffer);*/
 	int i;
-	for(i=0;i<51; i++){
+	for(i=0;i<10; i++){
 			  printf("M%d= %s\n",i, montar[i].vdID);
 		 }
 }
@@ -361,6 +362,7 @@ int eliminarDisco(){
     }
     return 1;
 }
+
 
 void adminParticion(){
 	//Atributos opcionales
@@ -442,6 +444,36 @@ int crearParticion(char* path, char* name,char* size,char* unit,char* type,char*
       return 0;
   }
 
+  //VERIFICAR LA UNIDAD
+
+    int bytes=0;
+    if(strcasecmp(unit,"b")==0||strcasecmp(unit,"B")==0){ //Kilobyte -> 1024 bytes
+  	  if(tam<2097152){ //2 *1024 *1024
+  		  printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
+  		  return 0;
+  	  }else{
+  		  bytes = tam;
+  	  }
+
+    }else if(strcasecmp(unit,"k")==0||strcasecmp(unit,"K")==0) { //byte -> 8bits
+  	  if(tam<2048){ //2 * 1024
+  		  printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
+  		  return 0;
+  	  }else{
+  	  	bytes=tam*1024;
+  	  }
+    }else if(strcasecmp(unit,"m")==0||strcasecmp(unit,"M")==0){ //megabyte -> 1024 Kb
+    	  if(tam<2){
+    	  	printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
+    	  	return 0;
+    	  }else{
+    	  	 bytes = tam*1024*1024;
+    	  }
+    }else{
+        printf("ERROR: La unidad no existe.\n");
+        return 0;
+    }
+
 //VERIFICAR AJUSTE
   if(strcasecmp(fit,"BF")==0 || strcasecmp(fit,"bf")==0 || strcasecmp(fit,"bF")==0 || strcasecmp(fit,"Bf")==0){
       strcpy(ajuste,"BF");
@@ -508,35 +540,7 @@ int crearParticion(char* path, char* name,char* size,char* unit,char* type,char*
       printf("ERROR: Ya existen 4 particiones.\n");
       return 0;
   }
-  //VERIFICAR LA UNIDAD
 
-  int bytes=0;
-  if(strcasecmp(unit,"b")==0||strcasecmp(unit,"B")==0){ //Kilobyte -> 1024 bytes
-	  if(tam<2097152){ //2 *1024 *1024
-		  printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
-		  return 0;
-	  }else{
-		  bytes = tam;
-	  }
-
-  }else if(strcasecmp(unit,"k")==0||strcasecmp(unit,"K")==0) { //byte -> 8bits
-	  if(tam<2048){ //2 * 1024
-		  printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
-		  return 0;
-	  }else{
-	  	bytes=tam*1024;
-	  }
-  }else if(strcasecmp(unit,"m")==0||strcasecmp(unit,"M")==0){ //megabyte -> 1024 Kb
-  	  if(tam<2){
-  	  	printf("ERROR: El tamanio minimo para una particion es 2Mb\n");
-  	  	return 0;
-  	  }else{
-  	  	 bytes = tam*1024*1024;
-  	  }
-  }else{
-      printf("ERROR: La unidad no existe.\n");
-      return 0;
-  }
 
 //VERIFICAR TAMANIO DE PARTICION
   libre = structDisco.size-particion;
@@ -621,6 +625,7 @@ if(tipo==1 || tipo==3){ // Si la particion es primaria o extendida
 					   structDisco.part[i].exten[j-1].next= structDisco.part[i].exten[j-1].start+structDisco.part[i].exten[j-1].size;
 					   espacio =1;
 				   }
+
 				   structDisco.part[i].exten[j].status ='1';
 				   espacio =1;
 				   break;
@@ -975,7 +980,7 @@ int montarParticion(char* path, char* name){
  }
  //VERIFICAR SI EL PATH Y LA PARTICION YA ESTA REGISTRADO
     int pop=0;
-    for(pop=0;pop<51;pop++){
+    for(pop=0;pop<31;pop++){
 
     	if(strcasecmp(montar[pop].path, path)==0 && strcasecmp(montar[pop].name, name)==0 ){
            if(montar[pop].estado==1){
@@ -989,42 +994,55 @@ int montarParticion(char* path, char* name){
     int a=0, c=0, d=0;
     int v=0, boolExistePath=0;
 
-    for(a=0; a<51;a++){
+    for(a=0; a<31;a++){
        if(strcasecmp(montar[a].path,path)==0){
     	   c++;
            boolExistePath=1;
-           v = montar[a].var;
+           v = montar[a].var ;
         }else{
        }
     }
 
     if(boolExistePath==1){
-		for(a=0; a<50;a++){
-		   if(montar[a].uso==0=='0'){
+		for(a=0; a<31;a++){
+		   if(montar[a].uso==0){
 			   break;
 		   }
 	}
+		int cont = 0;
+		for(pop=0;pop<31;pop++){
+			if(path!=NULL){
+		    	if(strcasecmp(montar[pop].path, path)==0){
+		    		cont++;
+		    	}
+			}
+		}
+
 		montar[a].estado=1;
 		montar[a].uso='1';
 		strcpy(montar[a].path,path);
 		strcpy(montar[a].name,name);
-		int p = montar[a].part;
-		p = p +1;
-		montar[a].part = p;
+		int p ;
+		p = montar[a].part;
+		p = p + 1;
+		montar[a].part++;
+		printf("v= %d\n",v);
 	//	printf("varLetra:DD =%d\n",v);
 		char *letra = letraDisco(v);
 		char n = p+'0';
 	//	printf("n =%c",n);
-		char *num=&n;
+		char *num = numeroMontar(cont);
 		//sprintf(num, "%d", p);
 		char *str = (char *) malloc(1 + strlen(letra)+ strlen(num) );
 		strcpy(str, letra);
 		strcat(str, num);
-		montar[a].vdID =str;		printf("-> Se monto la particion con id::%s correctamente.\n",str);
+		montar[a].vdID =str;
+		montar[a].var = v;
+		printf("-> Se monto la particion con id::%s correctamente.\n",str);
 
 
     }else{
-    	for(a=0; a<50;a++){
+    	for(a=0; a<31;a++){
 		   if(montar[a].uso==0){
 			   break;
 		   }
@@ -1053,10 +1071,60 @@ int montarParticion(char* path, char* name){
 	return 1;
 }
 
+char *numeroMontar(int num){
+char *numero;
+	switch(num){
+		case 0:
+			numero ="1";
+			break;
+
+		case 1:
+			numero = "2";
+			break;
+		case 2:
+			numero= "3";
+			break;
+		case 3:
+			numero= "4";
+			break;
+		case 4:
+			numero= "5";
+			break;
+		case 5:
+			numero= "6";
+			break;
+		case 6:
+			numero= "7";
+			break;
+		case 7:
+			numero= "8";
+			break;
+		case 8:
+			numero= "9";
+			break;
+		case 9:
+			numero= "10";
+			break;
+		case 10:
+			numero= "11";
+			break;
+		case 11:
+			numero= "12";
+			break;
+		case 12:
+			numero= "13";
+			break;
+	}
+	return numero;
+}
+
 char *letraDisco(int varLetra){
 	char *letra;
 
 	switch(varLetra){
+		case 0:
+			letra = "vd";
+			break;
 		case 1:
 			letra = "vda";
 			break;
@@ -1107,18 +1175,20 @@ void desmontar(){
 			printf("Se han encontrado errores en el comando. No se ha podido ejecutar correctamente.\n");
 		}
 	}
+	metodoPrueba();
 }
 
 int desmontarParticion(char* id){
-printf("des\n");
+printf("ID=%s\n",id);
 	int i=0;
-	for(i=0;i<51; i++){
+	for(i=0;i<31; i++){
 		if(montar[i].vdID!=NULL){
-			printf("NOT NULL -> %s-%s-",montar[i].vdID,id);
+			printf("NOT NULL -> %s-%s-\n",montar[i].vdID,id);
 			 if(strcasecmp(montar[i].vdID,id)==0){
 				 printf("igual\n");
 				 if(montar[i].estado==1){
 					 montar[i].estado=0;
+					 montar[i].vdID =NULL;
 					 printf("-> Se ha desmontado la particion correctamente.\n");
 					 return 1;
 				 }
@@ -1190,7 +1260,7 @@ int ejecutarScript(char *path){
 	        while (feof(archivo) == 0) {// *feof* hasta que se acabe el archivo
 	        	caracter[i] = fgetc(archivo); // *fgetc* lee lineapor linea
 	        	printf(&caracter[i]);
-	        	caracter[i]= tolower(caracter[i]);
+	        	//caracter[i]= tolower(caracter[i]);
 	            if(caracter[i]=='\n'){
 	            	//printf("\n");
 	            	char com[1000];
@@ -1213,18 +1283,7 @@ int ejecutarScript(char *path){
 	              printf("\n");
 	                i=0;
 	            }else if(caracter[i]=='\\'){
-	                i++;
-	                caracter[i] = ' ';
-	                 printf(&caracter[i]);
-	                 while(feof(archivo) == 0 && fgetc(archivo)!='\n'){
-	                	 caracter[i] = fgetc(archivo);
-	                	 printf(&caracter[i]);
-	                     caracter[i]= tolower(caracter[i]);
-	                     i++;
-	                }
-	               caracter[i] = ' ';
-	               printf(&caracter[i]);
-	               i++;
+	                    caracter[i]=' ';
 	            }else{
 	            	i++;
 	            }

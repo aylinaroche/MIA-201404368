@@ -26,12 +26,18 @@ void verificarComando(char *com, char *atributos){
 
     if(strcasecmp(com,"mkdisk")==0 ||  strcasecmp(com,"Mkdisk")==0 || strcasecmp(com,"MKDISK")==0 || strcasecmp(com,"MKdisk")==0) {
     //printf("mkdisk\n");
-    char atr[200];
+    	char atr[200];
          strcpy(atr,atributos);
          int j;
          for(j=0;j<200;j++){
          if(atr[j]=='\\'){
-        	 atr[j]=' ';
+        	 int k=j+1;
+         while(atr[k]!='\n'){
+        	 atr[k]=' ';
+             k++;
+         }
+         atr[k]=' ';
+        	// atr[j]=' ';
          }
          }
      strcpy(atributos,atr);
@@ -230,16 +236,71 @@ void verificarComando(char *com, char *atributos){
              strcpy(atributos,atr);
              char aux[100];
              strcpy(aux, atributos);
-             inst = strtok(atributos," ");
-             while(inst!=NULL){
-            	 inst = strtok(NULL, " ");
+             printf("atr = %s\n",atributos);
+             inst = strtok(atr," ");
 
-            	 if(cont>0){
-            		 atributoDisco(inst);
-            		 desmontar(inst);
-            	 }
-            	 cont++;
-             }
+            // printf("inst1 =%s\n",inst);
+
+             while(inst!=NULL){
+                	inst = strtok(NULL, " ");
+                	//printf("inst2 =%s\n",inst);
+            	switch(cont){
+            		case 1:
+            			com1=inst;
+            			break;
+            		case 2:
+            			com2=inst;
+            			break;
+            		case 3:
+            			com3=inst;
+            			break;
+            		case 4:
+            			com4=inst;
+            			break;
+            		case 5:
+            		    com5=inst;
+            		    break;
+            		case 6:
+            		    com6=inst;
+            		    break;
+            		case 7:
+            		    com7=inst;
+            		    break;
+            		case 8:
+            		      com8=inst;
+            		      break;
+            		}
+            		cont++;
+                }
+                int i;
+                for(i=1;i<cont-1;i++){
+                	if(i==1){
+                	atributoDisco(com1);
+					desmontar(com1);
+                	}else if(i==2){
+                	atributoDisco(com2);
+					desmontar(com2);
+                	}else if(i==3){
+                	atributoDisco(com3);
+                	desmontar(com3);
+                	}else if(i==4){
+                	atributoDisco(com4);
+                	desmontar(com4);
+                	}else if(i==5){
+                	atributoDisco(com5);
+                	desmontar(com5);
+                	}else if(i==6){
+                	atributoDisco(com6);
+                	desmontar(com6);
+                	}else if(i==7){
+                	atributoDisco(com7);
+                	desmontar(com7);
+                	}else if(i==8){
+                	atributoDisco(com8);
+                	desmontar(com8);
+                	}
+                }
+
 
     } else  if(strcasecmp(com,"REP")==0 ||strcasecmp(com,"rep")==0){
           //      printf("rep\n");

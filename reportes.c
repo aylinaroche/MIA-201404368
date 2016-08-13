@@ -126,25 +126,43 @@ char *dot= (char *) malloc(1 + strlen(auxName)+ strlen(e) );
 		strcat(dot, e);
 //printf("dd=%s\n",dot);
 
+		char fecha[100] ="fecha";
+		struct tm *timeinfo;
+		timeinfo = localtime(&structDisco.fecha);
+		strftime(fecha,100,"%c",timeinfo);
+
 
 //CREA EL REPORTE
 	FILE* report;
 	report = fopen(dot,"w+");
 	fprintf(report,"digraph mbr{\n");
 	fprintf(report,"rankdir = LR;\n");
-	fprintf(report,"node [shape = record, fontsize=12,fontname=\"%s\", style=filled ,fillcolor=pink, height = 1.2]; \n","UBUNTU");
+	fprintf(report,"node [shape = record, fontsize=12,fontname=\"%s\", style=filled ,fillcolor=lightsalmon, height = 1.2]; \n","UBUNTU");
 	fprintf(report,"Particion[label=\"");
-	char fecha[100] ="fecha";
-	struct tm *timeinfo;
-	timeinfo = localtime(&structDisco.fecha);
-	strftime(fecha,100,"%c",timeinfo);
 
 
-	fprintf(report,"{%s}\n|{NOMBRE | VALOR}|{mbr_tamanio:| %d }|{ mbr_fecha:| %s }|{ mbr_disk_signature: | %d }\n ",direcc,structDisco.size,fecha,structDisco.sign);
+	fprintf(report,"{%s}\n"
+			"|* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+			"|{NOMBRE | VALOR}\n"
+			"|{MBR_tamanio:| %d }\n"
+			"|{ MBR_fecha:| %s }\n"
+			"|{ MBR_disk_signature: | %d }\n"
+			"",direcc,structDisco.size,fecha,structDisco.sign);
 	int a=0;
 	for(a=0;a<4;a++){
 	    if(structDisco.part[a].status=='1'){
-	        fprintf(report,"\n|{part_status_%d: | %c}| { part_type_%d: | %c} |{ part_fit_%d : | %c}| { part_start_%d :| %d}|{ part_size_%d:| %d }|{ part_name_%d :| %s} ",a,structDisco.part[a].status,a,structDisco.part[a].type,a,structDisco.part[a].fit,a,structDisco.part[a].start,a,structDisco.part[a].size,a,structDisco.part[a].name);
+	        fprintf(report,"\n|{PART_status_%d: | %c}\n"
+	        		"| { PART_type_%d: | %c} \n"
+	        		"|{ PART_fit_%d : | %c}\n"
+	        		"| { PART_start_%d :| %d}\n"
+	        		"|{ PART_size_%d:| %d }\n"
+	        		"|{ PART_name_%d :| %s}\n "
+	        		"",a,structDisco.part[a].status,a,
+					structDisco.part[a].type,a,
+					structDisco.part[a].fit,a,
+					structDisco.part[a].start,a,
+					structDisco.part[a].size,a,
+					structDisco.part[a].name);
 	    }
 	}
 
@@ -158,7 +176,20 @@ char *dot= (char *) malloc(1 + strlen(auxName)+ strlen(e) );
 	         if(structDisco.part[a].exten[i].status=='1'){
 	             ii++;
 	             fprintf(report,"Particion%d[label=\"",ii);
-	             fprintf(report,"{EBR_%d}\n|{part_status_%d: | %c}|{ part_fit_%d : | %c}| { part_start_%d :| %d}|{ part_size_%d:| %d }|{ part_next_%d:| %d }|{ part_name_%d :| %s} ",ii,ii,structDisco.part[a].exten[i].status,ii,structDisco.part[a].exten[i].fit,ii,structDisco.part[a].exten[i].start,ii,structDisco.part[a].exten[i].size,ii,structDisco.part[a].exten[i].next,ii,structDisco.part[a].exten[i].name);
+	             fprintf(report,"{EBR_%d}\n"
+	            		 "|{PART_status_%d: | %c}"
+	            		 "|{ PART_fit_%d : | %c}"
+	            		 "| { PART_start_%d :| %d}"
+	            		 "|{ PART_size_%d:| %d }"
+	            		 "|{ PART_next_%d:| %d }"
+	            		 "|{ PART_name_%d :| %s} ",ii,ii,
+						 structDisco.part[a].exten[i].status,ii,
+						 structDisco.part[a].exten[i].fit,ii,
+						 structDisco.part[a].exten[i].start,ii,
+						 structDisco.part[a].exten[i].size,ii,
+						 structDisco.part[a].exten[i].next,ii,
+						 structDisco.part[a].exten[i].name);
+
 	        fprintf(report,"\"];\n");
 	         }
 	       }
@@ -192,7 +223,8 @@ char *dot= (char *) malloc(1 + strlen(auxName)+ strlen(e) );
 }
 
 int reporteDISK(char* id,char* name, char* path){
-	//VERIFICA SI EL EL ID EXISTE
+
+//VERIFICA SI EL EL ID EXISTE
 		 char* direcc;
 		 int boolIgual = 0;
 		 int i=0;
@@ -309,13 +341,13 @@ int reporteDISK(char* id,char* name, char* path){
 	        fprintf(report,"|Primaria");
 	        par++;
 
-	    }else if(structDisco.part[j].status =='0' && structDisco.part[j].size!=0){
+	    }else if(structDisco.part[j].status =='0' ){//&& structDisco.part[j].size!=0){
 	        fprintf(report,"|Libre");
 	        par++;
 	    }else if(structDisco.part[j].status == '1' && (structDisco.part[j].type == 'E'|| structDisco.part[j].type=='e')){
-	        fprintf(report,"|{exten|{");
-	        int i=7;
-	        for(i=0;i<8;i++){
+	        fprintf(report,"|{Extendida|{");
+	        int i;
+	        for(i=0;i<20;i++){
 	         if(structDisco.part[j].exten[i].status=='1'){
 	         fprintf(report,"EBR|Logica |");
 	         }else if(structDisco.part[j].exten[i].status=='0' && structDisco.part[j].exten[i].size!=0){
@@ -351,5 +383,6 @@ int reporteDISK(char* id,char* name, char* path){
 	strcat(consola2, "xdg-open ");
 	strcat(consola2, auxDirecc);
 	system(consola2);
+	return 1;
 }
 

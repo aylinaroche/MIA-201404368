@@ -36,6 +36,7 @@ int aleatorio();
 void script();
 int ejecutarScript(char *path);
 void atributoExec(char* coman);
+char *numeroMontar(int num);
 
 int boolExec;
 mount montar[50];
